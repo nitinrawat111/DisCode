@@ -1,13 +1,15 @@
-import cors from 'cors';
-import logger from './utils/logger.js';
-import ApiError from './utils/ApiError.js';
-import cookieParser from 'cookie-parser';
-import ApiResponse from './utils/ApiResponse.js';
-import v1Router from './routes/api/v1/v1.router.js';
-import morganMiddleware from './middlewares/morgan.middleware.js';
-import express, { NextFunction, Request, Response } from 'express';
-import { dbInit } from './config/db.js';
+import * as cors from 'cors';
+import logger from './utils/logger';
+import ApiError from './utils/ApiError';
+import * as cookieParser from 'cookie-parser';
+import ApiResponse from './utils/ApiResponse';
+import v1Router from './routes/api/v1/v1.router';
+import morganMiddleware from './middlewares/morgan.middleware';
+import { NextFunction, Request, Response } from 'express';
+import * as express from 'express';
+import { dbInit } from './config/db';
 import { ZodError } from 'zod';
+import { jwksServiceInstance } from 'services/jwks.service';
 
 ////////////////////////////////////////////////////////////
 // Express App Initialization
@@ -57,11 +59,14 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // Server Initialization
 ////////////////////////////////////////////////////////////
 const PORT = process.env.PORT;
-dbInit().then(() => {
+async function init() {
+    await dbInit();
+    await jwksServiceInstance.waitForInit();
     app.listen(PORT, () => {
         logger.info(`Server started on PORT: ${PORT}`);
     });
-});
+}
+init();
 
 ////////////////////////////////////////////////////////////
 // Exporting Express app for testing

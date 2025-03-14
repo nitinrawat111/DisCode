@@ -1,12 +1,13 @@
 import * as winston from 'winston';
 import * as uuid from 'uuid';
-import DailyRotateFile from 'winston-daily-rotate-file';
+import * as DailyRotateFile from 'winston-daily-rotate-file';
 import LokiTransport from "winston-loki";
+import { SERVICE_NAME } from '../constants';
 
 // Creating a new winston format to add some required fields to JSON logs
 const customJsonFormatFactory = winston.format((info, opts) => {
     info.id = uuid.v4();
-    info.SERVICE_NAME = process.env.SERVICE_NAME;
+    info.SERVICE_NAME = SERVICE_NAME;
     return info;
 });
 const customJsonFormat = customJsonFormatFactory();
@@ -18,7 +19,7 @@ const logFormat = winston.format.combine(
 
 // Defining console logging format
 const consoleLogFormat = winston.format.printf(({ level, message, label, timestamp }) => {
-    return `[${process.env.SERVICE_NAME}] [${level}] ${message}\n------------------------------------------------------------------------`;
+    return `[${SERVICE_NAME}] [${level}] ${message}\n------------------------------------------------------------------------`;
 });
 
 const logger = winston.createLogger({
@@ -30,7 +31,7 @@ const logger = winston.createLogger({
         new DailyRotateFile({
             dirname: './logs/',
             level: process.env.FILE_LOG_LEVEL,
-            filename: `${process.env.SERVICE_NAME}_%DATE%.log`,
+            filename: `${SERVICE_NAME}_%DATE%.log`,
             frequency: '24h',
             datePattern: 'YYYY-MM-DD_HH-mm',
             zippedArchive: true,

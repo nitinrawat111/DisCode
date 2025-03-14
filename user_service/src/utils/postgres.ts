@@ -1,4 +1,4 @@
-import pg from 'pg';
+import * as pg from 'pg';
 
 /**
  * Returns true if the error is caused because if inserting a duplicate value in unique field

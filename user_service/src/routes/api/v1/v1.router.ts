@@ -1,6 +1,6 @@
-import express from 'express';
-import swaggerRouter from './swagger.router.js';
-import userRouter from './users.router.js';
+import * as express from 'express';
+import swaggerRouter from './swagger.router';
+import userRouter from './users.router';
 
 const router = express.Router();
 router.use('/users', userRouter);

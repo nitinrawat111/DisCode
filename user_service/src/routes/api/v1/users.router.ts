@@ -1,7 +1,7 @@
-import express from "express";
-import userController from "../../../controllers/users.controller.js";
-import asyncHandler from "express-async-handler";
-import { verifyJWT } from "../../../middlewares/jwt.middleware.js";
+import * as express from "express";
+import { userControllerInstance } from "../../../controllers/users.controller";
+import * as asyncHandler from "express-async-handler";
+import { parseUserHeaders } from "../../../middlewares/parseUserHeaders.middleware";
 
 const router = express.Router();
 
@@ -51,10 +51,10 @@ const router = express.Router();
  *       409:
  *         description: "Username/Email already exists"
  */
-router.post('/register', asyncHandler(userController.register));
-router.post('/login', asyncHandler(userController.login));
-router.get('/profile', verifyJWT, asyncHandler(userController.getLoggedUserProfile));
-router.get('/profile/:userId', asyncHandler(userController.getUserProfile));
-router.patch('/profile', verifyJWT, asyncHandler(userController.updateProfile));
+router.post('/register', asyncHandler(userControllerInstance.register));
+router.post('/login', asyncHandler(userControllerInstance.login));
+router.get('/profile', parseUserHeaders, asyncHandler(userControllerInstance.getLoggedUserProfile));
+router.get('/profile/:userId', asyncHandler(userControllerInstance.getUserProfile));
+router.patch('/profile', parseUserHeaders, asyncHandler(userControllerInstance.updateProfile));
 
 export default router;

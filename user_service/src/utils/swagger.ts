@@ -1,4 +1,5 @@
-import swaggerJSDoc from "swagger-jsdoc";
+import * as swaggerJSDoc from "swagger-jsdoc";
+import { SERVICE_NAME } from "../constants";
 
 /**
  * This function creates a swagger specification for parsing api docs from js comments
@@ -22,7 +23,7 @@ export function getSwaggerDoc (version: number = 1) {
                 },
             ],
             info: {
-                title: process.env.SERVICE_NAME as string,
+                title: SERVICE_NAME as string,
                 version: `${version}`,
             },
         },

@@ -1,6 +1,6 @@
-import pg from 'pg';
-import { userRoleDefinitionQuery, userTableCreationQuery } from '../models/users.model.js';
-import logger from '../utils/logger.js';
+import * as pg from 'pg';
+import { userRoleDefinitionQuery, userTableCreationQuery } from '../models/users.model';
+import logger from '../utils/logger';
 
 export const dbPool = new pg.Pool({
     host: process.env.POSTGRES_HOST,

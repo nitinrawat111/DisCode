@@ -1,4 +1,4 @@
-import { objKeysToCamelCase } from "./camelCase.js";
+import { objKeysToCamelCase } from "./camelCase";
 
 // Represents the API response object
 export default class ApiResponse {

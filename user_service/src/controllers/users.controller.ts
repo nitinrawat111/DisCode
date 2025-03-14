@@ -1,40 +1,48 @@
 import { NextFunction, Request, Response } from "express";
-import ApiResponse from "../utils/ApiResponse.js";
-import userService from "../services/user.service.js";
-import jwtService from "../services/jwt.service.js";
-import { ACCESS_TOKEN_EXPIRATION_TIME, COOKIE_OPTIONS } from "../constants.js";
+import ApiResponse from "../utils/ApiResponse";
+import { userServiceInstance } from "../services/user.service";
+import { jwksServiceInstance } from "../services/jwks.service";
+import { ACCESS_TOKEN_EXPIRATION_TIME, COOKIE_OPTIONS } from "../constants";
+import { userIdDto } from "../dtos/users.dto";
+import { AuthenticatedRequest } from "types/types";
 
-// Namespace for user controllers
-const userController = {
-    register: async function (req: Request, res: Response, next: NextFunction) {
-        await userService.register(req.body);
-        res.send(201).json(new ApiResponse(200, "Succesfully registered"));
-    },
+export class UserController {
+    async register(req: Request, res: Response, next: NextFunction) {
+        await userServiceInstance.register(req.body);
+        res.status(201).json(new ApiResponse(201, "Succesfully registered"));
+    }; 
     
-    getUserProfile: async function (req: Request, res: Response, next: NextFunction) {
-        const userProfile = await userService.getUserProfile(req.params.userId);
-        res.status(200).json(new ApiResponse(200, "User Profile fetched successfully", userProfile));
-    },
-
-    login: async function name (req: Request, res: Response, next: NextFunction) {
-        const payload = await userService.login(req.body);
-        const accessToken = jwtService.getAccessToken(payload);
+    async login(req: Request, res: Response, next: NextFunction) {
+        const payload = await userServiceInstance.login(req.body);
+        const accessToken = await jwksServiceInstance.signJWT(payload);
         res.cookie("accessToken", accessToken, {
             maxAge: ACCESS_TOKEN_EXPIRATION_TIME,
             ...COOKIE_OPTIONS
         });
         res.status(200).json(new ApiResponse(200, "Logged in successfully"));
-    },
+    };
 
-    getLoggedUserProfile: async function (req: Request, res: Response, next: NextFunction) {
-        const userProfile = await userService.getUserProfile(req.user?.userId);
-        res.status(200).json(new ApiResponse(200, "User Profile fecthed successfully", userProfile));
-    },
-
-    updateProfile: async function (req: Request, res: Response, next: NextFunction) {
-        await userService.updateProfile(req.user?.userId, req.body);
-        res.status(200).json(new ApiResponse(200, "User Profile updated successfully"));
+    async getCurrentUser(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+        const userProfile = await userServiceInstance.getUserProfile(req.user?.userId);
+        res.status(200).json(new ApiResponse(200, "Current User profile fetched succesfully", userProfile));
     }
+    
+    async getUserProfile(req: Request, res: Response, next: NextFunction) {
+        const userId = parseInt(req.params.userId);
+        userIdDto.parse(userId);
+        const userProfile = await userServiceInstance.getUserProfile(userId);
+        res.status(200).json(new ApiResponse(200, "User Profile fetched successfully", userProfile));
+    };
+
+    async getLoggedUserProfile (req: AuthenticatedRequest, res: Response, next: NextFunction) {
+        const userProfile = await userServiceInstance.getUserProfile(req.user?.userId);
+        res.status(200).json(new ApiResponse(200, "User Profile fecthed successfully", userProfile));
+    };
+
+    async updateProfile(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+        await userServiceInstance.updateProfile(req.user?.userId, req.body);
+        res.status(200).json(new ApiResponse(200, "User Profile updated successfully"));
+    };
 }
 
-export default userController;
+export const userControllerInstance = new UserController();

@@ -1,18 +1,30 @@
-import { dbPool } from "../config/db.js";
-import { userIdSchema, userLoginSchema, userRegistrationSchema, userUpdateSchema } from "../schemas/users.schema.js";
-import bcrypt from 'bcrypt';
-import ApiError from "../utils/ApiError.js";
+import { dbPool } from "../config/db";
+import { userIdDto, UserRoleEnum } from "../dtos/users.dto";
+import * as bcrypt from 'bcrypt';
+import ApiError from "../utils/ApiError";
 import zod from 'zod';
-import { isDuplicateKeyError } from "../utils/postgres.js";
+import { isDuplicateKeyError } from "../utils/postgres";
+import { BCRYPT_SALT_ROUNDS } from "../constants";
+import { UserJWTPayload } from "../types/types";
+import { objKeysToCamelCase } from "../utils/camelCase";
+import { userLoginDto } from "../dtos/login.dto";
+import { userRegistrationDto } from "../dtos/register.dto";
+import { userUpdateDto } from "../dtos/update-profile.dto";
 
-// Namespace for user controllers
-const userService = {
-    register: async function (newUserDetails: zod.infer<typeof userRegistrationSchema>) {
+export class UserService {
+    private roleRanks: Record<UserRoleEnum, number> = {
+        superadmin: 3,
+        admin: 2,
+        moderator: 1,
+        normal: 0,
+    };
+
+    async register (newUserDetails: zod.infer<typeof userRegistrationDto>) {
         // Validate Request Body
-        const newUser = userRegistrationSchema.parse(newUserDetails);
+        const newUser = userRegistrationDto.parse(newUserDetails);
 
         // Hash the password
-        const passwordHash = await bcrypt.hash(newUser.password, parseInt(process.env.BCRYPT_SALT_ROUNDS || '8'));
+        const passwordHash = await bcrypt.hash(newUser.password, parseInt(BCRYPT_SALT_ROUNDS.toString()));
 
         try {
             await dbPool.query(
@@ -35,11 +47,11 @@ const userService = {
             }
             throw err;
         }
-    },
+    };
 
-    login: async function (userLoginDetails: zod.infer<typeof userLoginSchema>) {
+    async login (userLoginDetails: zod.infer<typeof userLoginDto>) {
         // Validate request body
-        const { email, password } = userLoginSchema.parse(userLoginDetails);
+        const { email, password } = userLoginDto.parse(userLoginDetails);
 
         const queryResult = await dbPool.query(
             `SELECT user_id, email, password_hash FROM USERS WHERE email=$1`,
@@ -59,11 +71,11 @@ const userService = {
             role: user.role
         }
         return payload;
-    },
+    };
 
-    getUserProfile: async function (userId: string | undefined) {
+    async getUserProfile(userId: zod.infer<typeof userIdDto>) {
         // Validate user id 
-        userId = userIdSchema.parse(userId);
+        userId = userIdDto.parse(userId);
         
         const queryResult = await dbPool.query(
             `SELECT * FROM USERS WHERE user_id=$1`,
@@ -75,21 +87,17 @@ const userService = {
 
         // Removing sensitive fields
         delete user.password_hash;
-        return user;
-    },
+        return objKeysToCamelCase(user);
+    };
 
-    updateProfile: async function (userId: string | undefined, updatedUserDetails: zod.infer<typeof userUpdateSchema>) {
+    async updateProfile(userId: zod.infer<typeof userIdDto>, updatedUserDetails: zod.infer<typeof userUpdateDto>) {
         // Validate request body and userId
-        userId = userIdSchema.parse(userId);
-        updatedUserDetails = userUpdateSchema.parse(updatedUserDetails);
+        userId = userIdDto.parse(userId);
+        updatedUserDetails = userUpdateDto.parse(updatedUserDetails);
 
         try {
             await dbPool.query(
-                `UPDATE USERS 
-                SET username = COALESCE($1, username),
-                    bio = COALESCE($2, bio),
-                    avatar_url = COALESCE($3, avatar_url)
-                WHERE user_id = $4`,
+                `UPDATE USERS SET username = COALESCE($1, username), bio = COALESCE($2, bio), avatar_url = COALESCE($3, avatar_url) WHERE user_id = $4`,
                 [updatedUserDetails.username, updatedUserDetails.bio, updatedUserDetails.avatarUrl, userId]
             );
         } catch (err: any) {
@@ -101,6 +109,40 @@ const userService = {
             throw err;
         }
     }
+
+    async getUserRole(userId: zod.infer<typeof userIdDto>) {
+        userId = userIdDto.parse(userId);
+
+        const queryResult = await dbPool.query(
+            `SELECT role FROM users where user_id = $1`,
+            [userId]
+        );
+        
+        if(queryResult.rowCount == 0) {
+            throw new ApiError(404, "UserId not found");
+        }
+
+        return queryResult.rows[0].role as UserRoleEnum;
+    }
+
+    async changeRole(targetUserId: zod.infer<typeof userIdDto>, targetUserNewRole: UserRoleEnum, changerId: zod.infer<typeof userIdDto>) {
+        // Assuming changerId is coming from jwt. So, it exists and is valid;
+        // If the targetUserId does not exist, error will be thrown in this call itself
+        const [ changerRole,  targetUserCurrentRole] = await Promise.all([ await this.getUserRole(changerId), await this.getUserRole(targetUserId) ]);
+        
+        if(changerRole !== UserRoleEnum.SUPERADMIN && this.roleRanks[targetUserCurrentRole] >= this.roleRanks[changerRole]) {
+            throw new ApiError(403, "You do not have permission to modify this user's role");
+        }
+
+        if(changerRole !== UserRoleEnum.SUPERADMIN && this.roleRanks[targetUserNewRole] >= this.roleRanks[changerRole]) {
+            throw new ApiError(403, "You do not have permission to assign this role");
+        }
+
+        const queryResult = await dbPool.query(
+            `UPDATE users SET role = $1 where user_id = $2`,
+            [targetUserNewRole, targetUserId]
+        );
+    }
 }
 
-export default userService;
+export const userServiceInstance = new UserService();

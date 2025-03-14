@@ -1,5 +1,5 @@
-import morgan from 'morgan';
-import logger from '../utils/logger.js';
+import * as morgan from 'morgan';
+import logger from '../utils/logger';
 
 const logFormat =
     process.env.NODE_ENV === "dev"
