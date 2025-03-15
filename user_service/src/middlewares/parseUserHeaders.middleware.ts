@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { userIdDto, userRoleDto, UserRoleEnum } from '../dtos/users.dto';
 import ApiError from '../utils/ApiError';
-import { AuthenticatedRequest } from 'types/types';
+import { AuthenticatedRequest } from '../types/types';
 
 export const parseUserHeaders = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     // Extract headers

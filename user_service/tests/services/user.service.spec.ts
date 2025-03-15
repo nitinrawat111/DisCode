@@ -181,7 +181,7 @@ describe('UserService - Unit Tests', () => {
             getUserRoleStub.withArgs(2).resolves(UserRoleEnum.NORMAL);
             dbPoolQueryStub.resolves({ rows: [] });
 
-            await expect(userService.changeRole(2, UserRoleEnum.MODERATOR, 1)).to.eventually.be.fulfilled;
+            await expect(userService.changeRole(2, { newRole: UserRoleEnum.MODERATOR }, 1)).to.eventually.be.fulfilled;
             expect(dbPoolQueryStub.calledWith('UPDATE users SET role = $1 where user_id = $2', [UserRoleEnum.MODERATOR, 2])).to.be.true;
         });
 
@@ -191,7 +191,7 @@ describe('UserService - Unit Tests', () => {
             getUserRoleStub.withArgs(2).resolves(UserRoleEnum.NORMAL);
             dbPoolQueryStub.resolves({ rows: [] });
 
-            await expect(userService.changeRole(2, UserRoleEnum.MODERATOR, 1)).to.eventually.be.fulfilled;
+            await expect(userService.changeRole(2, { newRole: UserRoleEnum.MODERATOR }, 1)).to.eventually.be.fulfilled;
         });
 
         it('should throw ApiError if changer lacks permission to modify higher role', async () => {
@@ -199,7 +199,7 @@ describe('UserService - Unit Tests', () => {
             getUserRoleStub.withArgs(1).resolves(UserRoleEnum.MODERATOR);
             getUserRoleStub.withArgs(2).resolves(UserRoleEnum.ADMIN);
 
-            await expect(userService.changeRole(2, UserRoleEnum.NORMAL, 1)).to.be.rejectedWith(ApiError, 'You do not have permission to modify this user\'s role');
+            await expect(userService.changeRole(2,  { newRole: UserRoleEnum.NORMAL }, 1)).to.be.rejectedWith(ApiError, 'You do not have permission to modify this user\'s role');
         });
 
         it('should throw ApiError if changer assigns role higher than their own', async () => {
@@ -207,7 +207,7 @@ describe('UserService - Unit Tests', () => {
             getUserRoleStub.withArgs(1).resolves(UserRoleEnum.ADMIN);
             getUserRoleStub.withArgs(2).resolves(UserRoleEnum.NORMAL);
 
-            await expect(userService.changeRole(2, UserRoleEnum.SUPERADMIN, 1)).to.be.rejectedWith(ApiError, 'You do not have permission to assign this role');
+            await expect(userService.changeRole(2,  { newRole: UserRoleEnum.SUPERADMIN }, 1)).to.be.rejectedWith(ApiError, 'You do not have permission to assign this role');
         });
     });
 });

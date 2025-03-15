@@ -10,6 +10,7 @@ import { objKeysToCamelCase } from "../utils/camelCase";
 import { userLoginDto } from "../dtos/login.dto";
 import { userRegistrationDto } from "../dtos/register.dto";
 import { userUpdateDto } from "../dtos/update-profile.dto";
+import { changeRoleDto } from "../dtos/change-role.dto";
 
 export class UserService {
     private roleRanks: Record<UserRoleEnum, number> = {
@@ -21,20 +22,20 @@ export class UserService {
 
     async register (newUserDetails: zod.infer<typeof userRegistrationDto>) {
         // Validate Request Body
-        const newUser = userRegistrationDto.parse(newUserDetails);
+        const validatedNewUser = userRegistrationDto.parse(newUserDetails);
 
         // Hash the password
-        const passwordHash = await bcrypt.hash(newUser.password, parseInt(BCRYPT_SALT_ROUNDS.toString()));
+        const passwordHash = await bcrypt.hash(validatedNewUser.password, parseInt(BCRYPT_SALT_ROUNDS.toString()));
 
         try {
             await dbPool.query(
                 'INSERT INTO USERS VALUES (DEFAULT, $1, $2, $3, DEFAULT, $4, $5, DEFAULT)', 
                 [
-                    newUser.username,
-                    newUser.email,
+                    validatedNewUser.username,
+                    validatedNewUser.email,
                     passwordHash,
-                    newUser.bio,
-                    newUser.avatarUrl,
+                    validatedNewUser.bio,
+                    validatedNewUser.avatarUrl,
                 ]
             );
         } catch (err: any) {
@@ -75,11 +76,11 @@ export class UserService {
 
     async getUserProfile(userId: zod.infer<typeof userIdDto>) {
         // Validate user id 
-        userId = userIdDto.parse(userId);
+        const validatedUserId = userIdDto.parse(userId);
         
         const queryResult = await dbPool.query(
             `SELECT * FROM USERS WHERE user_id=$1`,
-            [ userId ]
+            [ validatedUserId ]
         );
         const user = queryResult.rows?.[0];
         if(!user)
@@ -91,14 +92,14 @@ export class UserService {
     };
 
     async updateProfile(userId: zod.infer<typeof userIdDto>, updatedUserDetails: zod.infer<typeof userUpdateDto>) {
-        // Validate request body and userId
-        userId = userIdDto.parse(userId);
-        updatedUserDetails = userUpdateDto.parse(updatedUserDetails);
+        // Assuming userId is coming from JWT, hence it will be valid
+        // Validate request body
+        const validatedUpdates = userUpdateDto.parse(updatedUserDetails);
 
         try {
             await dbPool.query(
                 `UPDATE USERS SET username = COALESCE($1, username), bio = COALESCE($2, bio), avatar_url = COALESCE($3, avatar_url) WHERE user_id = $4`,
-                [updatedUserDetails.username, updatedUserDetails.bio, updatedUserDetails.avatarUrl, userId]
+                [validatedUpdates.username, validatedUpdates.bio, validatedUpdates.avatarUrl, userId]
             );
         } catch (err: any) {
             // If error is related to inserting a duplicate key in unique field
@@ -111,11 +112,11 @@ export class UserService {
     }
 
     async getUserRole(userId: zod.infer<typeof userIdDto>) {
-        userId = userIdDto.parse(userId);
+        const validatedUserId = userIdDto.parse(userId);
 
         const queryResult = await dbPool.query(
             `SELECT role FROM users where user_id = $1`,
-            [userId]
+            [validatedUserId]
         );
         
         if(queryResult.rowCount == 0) {
@@ -125,22 +126,25 @@ export class UserService {
         return queryResult.rows[0].role as UserRoleEnum;
     }
 
-    async changeRole(targetUserId: zod.infer<typeof userIdDto>, targetUserNewRole: UserRoleEnum, changerId: zod.infer<typeof userIdDto>) {
+    async changeRole(targetUserId: zod.infer<typeof userIdDto>, changeRoleDetails: zod.infer<typeof changeRoleDto>, changerId: zod.infer<typeof userIdDto>) {
         // Assuming changerId is coming from jwt. So, it exists and is valid;
+        const validatedTargetUserId = userIdDto.parse(targetUserId);
+        const { newRole } = changeRoleDto.parse(changeRoleDetails);
+
         // If the targetUserId does not exist, error will be thrown in this call itself
-        const [ changerRole,  targetUserCurrentRole] = await Promise.all([ await this.getUserRole(changerId), await this.getUserRole(targetUserId) ]);
+        const [ changerRole,  targetUserCurrentRole] = await Promise.all([ await this.getUserRole(changerId), await this.getUserRole(validatedTargetUserId) ]);
         
         if(changerRole !== UserRoleEnum.SUPERADMIN && this.roleRanks[targetUserCurrentRole] >= this.roleRanks[changerRole]) {
             throw new ApiError(403, "You do not have permission to modify this user's role");
         }
 
-        if(changerRole !== UserRoleEnum.SUPERADMIN && this.roleRanks[targetUserNewRole] >= this.roleRanks[changerRole]) {
+        if(changerRole !== UserRoleEnum.SUPERADMIN && this.roleRanks[newRole] >= this.roleRanks[changerRole]) {
             throw new ApiError(403, "You do not have permission to assign this role");
         }
 
         const queryResult = await dbPool.query(
             `UPDATE users SET role = $1 where user_id = $2`,
-            [targetUserNewRole, targetUserId]
+            [newRole, validatedTargetUserId]
         );
     }
 }

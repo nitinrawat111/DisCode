@@ -9,7 +9,7 @@ import { NextFunction, Request, Response } from 'express';
 import * as express from 'express';
 import { dbInit } from './config/db';
 import { ZodError } from 'zod';
-import { jwksServiceInstance } from 'services/jwks.service';
+import { jwksServiceInstance } from './services/jwks.service';
 
 ////////////////////////////////////////////////////////////
 // Express App Initialization
