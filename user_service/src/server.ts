@@ -1,7 +1,6 @@
 import * as cors from 'cors';
 import logger from './utils/logger';
 import ApiError from './utils/ApiError';
-import * as cookieParser from 'cookie-parser';
 import ApiResponse from './utils/ApiResponse';
 import v1Router from './routes/api/v1/v1.router';
 import morganMiddleware from './middlewares/morgan.middleware';
@@ -20,7 +19,6 @@ const app = express();
 // Middlewares
 ////////////////////////////////////////////////////////////
 app.use(express.json());
-app.use(cookieParser());
 app.use(morganMiddleware);
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
