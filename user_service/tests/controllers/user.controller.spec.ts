@@ -5,7 +5,6 @@ import { UserController } from '../../src/controllers/users.controller';
 import { UserService, userServiceInstance } from '../../src/services/user.service';
 import { jwksServiceInstance } from '../../src/services/jwks.service';
 import ApiResponse from '../../src/utils/ApiResponse';
-import { ACCESS_TOKEN_EXPIRATION_TIME, COOKIE_OPTIONS } from '../../src/constants';
 import { UserRoleEnum } from '../../src/dtos/users.dto';
 
 // Enable chai-as-promised
@@ -26,6 +25,7 @@ describe('UserController - Unit Tests', () => {
             json: sinon.stub().returnsThis(),
             cookie: sinon.stub().returnsThis(),
             send: sinon.stub().returnsThis(),
+            setHeader: sinon.stub().returnsThis(), // Added setHeader stub
         };
     });
 
@@ -56,7 +56,7 @@ describe('UserController - Unit Tests', () => {
     });
 
     describe('login', () => {
-        it('should login user, set cookie, and return success response', async () => {
+        it('should login user, set Authorization header, and return success response', async () => {
             const payload = { userId: 1, role: UserRoleEnum.NORMAL };
             userServiceStub.login.resolves(payload);
             jwksServiceStub.signJWT.resolves('mock-token');
@@ -64,10 +64,7 @@ describe('UserController - Unit Tests', () => {
             await userController.login({ body: {} } as any, res, () => { });
             expect(userServiceStub.login.calledOnce).to.be.true;
             expect(jwksServiceStub.signJWT.calledWith(payload)).to.be.true;
-            expect(res.cookie.calledWith('accessToken', 'mock-token', {
-                maxAge: ACCESS_TOKEN_EXPIRATION_TIME,
-                ...COOKIE_OPTIONS,
-            })).to.be.true;
+            expect(res.setHeader.calledWith('Authorization', 'mock-token')).to.be.true; // Updated to check Authorization header
             expect(res.status.calledWith(200)).to.be.true;
             expect(res.json.calledWith(new ApiResponse(200, "Logged in successfully"))).to.be.true;
         });

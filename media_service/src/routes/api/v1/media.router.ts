@@ -1,7 +1,6 @@
 import * as express from 'express';
 import { mediaControllerInstance } from '../../../controllers/media.controller';
 import * as asyncHandler from 'express-async-handler';
-import { parseUserHeaders } from '../../../middlewares/parseUserHeaders.middleware'; // Optional, for auth
 
 const router = express.Router();
 

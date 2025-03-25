@@ -3,7 +3,7 @@ import chaiAsPromised from 'chai-as-promised';
 import * as sinon from 'sinon';
 import * as proxyquire from 'proxyquire';
 import { S3Client } from '@aws-sdk/client-s3';
-import { S3_FOLDER_NAME, MAX_MEDIA_SIZE } from '../../src/constants';
+import { signedUploadUrlRequestDto } from '../../src/dtos/get-signed-upload-url.dto';
 
 use(chaiAsPromised);
 
@@ -26,7 +26,7 @@ describe('MediaService - Unit Tests', () => {
         createPresignedPostStub = sandbox.stub().resolves({
             url: 'https://test-bucket.s3.amazonaws.com/',
             fields: {
-                key: `${S3_FOLDER_NAME}/mock-uuid`,
+                key: 'users/mock-uuid', // Example folder name
                 AWSAccessKeyId: 'test-access-key',
                 Policy: 'mock-policy',
                 'X-Amz-Signature': 'mock-signature',
@@ -93,11 +93,14 @@ describe('MediaService - Unit Tests', () => {
         });
 
         it('should generate a pre-signed POST URL successfully', async () => {
-            const contentType = 'image/jpeg';
-            const result = await mediaService.getSignedUploadUrl(contentType);
+            const request: Zod.infer<typeof signedUploadUrlRequestDto> = {
+                contentType: 'image/jpeg',
+                folderName: 'users',
+            };
+            const result = await mediaService.getSignedUploadUrl(request);
 
             expect(result.url).to.equal('https://test-bucket.s3.amazonaws.com/');
-            expect(result.fields.key).to.equal(`${S3_FOLDER_NAME}/mock-uuid`);
+            expect(result.fields.key).to.equal('users/mock-uuid');
             expect(result.fields['Content-Type']).to.equal('image/jpeg');
             expect(createPresignedPostStub.calledOnce).to.be.true;
 
@@ -106,7 +109,7 @@ describe('MediaService - Unit Tests', () => {
                 Bucket: 'test-bucket',
                 Key: result.fields.key,
                 Conditions: [
-                    ['content-length-range', 1, MAX_MEDIA_SIZE],
+                    ['content-length-range', 1, MediaService['MAX_FILE_SIZE']], // Access static property
                     ['eq', '$Content-Type', 'image/jpeg'],
                 ],
                 Fields: { 'Content-Type': 'image/jpeg' },
@@ -115,16 +118,45 @@ describe('MediaService - Unit Tests', () => {
         });
 
         it('should throw error for invalid contentType', async () => {
-            const invalidContentType = 'text/plain';
-            // Using any to allow invalid contentType
-            await expect(mediaService.getSignedUploadUrl(invalidContentType as any))
-                .to.be.rejectedWith('Content type must be one of: image/jpeg, image/png, image/gif, image/webp');
+            const request = {
+                contentType: 'invalid/type', // Invalid content type
+                folderName: 'users',
+            };
+            await expect(mediaService.getSignedUploadUrl(request as any)).to.be.rejectedWith(
+                /Invalid enum value/
+            );
+        });
+
+        it('should throw error for invalid folderName', async () => {
+            const request = {
+                contentType: 'image/jpeg',
+                folderName: 'invalid-folder', // Invalid folder name
+            };
+            await expect(mediaService.getSignedUploadUrl(request as any)).to.be.rejectedWith(
+                /Invalid enum value/
+            );
+        });
+
+        it('should throw error if request object is missing required fields', async () => {
+            const request = {
+                contentType: 'image/jpeg',
+                // folderName is missing
+            } as any;
+            await expect(mediaService.getSignedUploadUrl(request)).to.be.rejectedWith(
+                /Required/
+            );
         });
 
         it('should throw error if createPresignedPost fails', async () => {
             createPresignedPostStub.rejects(new Error('S3 error'));
-            await expect(mediaService.getSignedUploadUrl('image/jpeg'))
-                .to.be.rejectedWith(Error, 'S3 error');
+            const request: Zod.infer<typeof signedUploadUrlRequestDto> = {
+                contentType: 'image/jpeg',
+                folderName: 'users',
+            };
+            await expect(mediaService.getSignedUploadUrl(request)).to.be.rejectedWith(
+                Error,
+                'S3 error'
+            );
         });
     });
 });

@@ -1,13 +1,16 @@
 import { S3Client } from '@aws-sdk/client-s3';
-import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 import { v4 as uuidv4 } from 'uuid';
-import { contentTypeDto } from '../dtos/get-signed-upload-url.dto';
-import { MAX_MEDIA_SIZE, S3_FOLDER_NAME } from '../constants';
+import { z } from 'zod';
 import { SignedUploadUrlResponse } from '../types/types';
+import { signedUploadUrlRequestDto } from '../dtos/get-signed-upload-url.dto';
+
+
 
 export class MediaService {
     private readonly s3Client: S3Client;
     private readonly bucketName: string;
+    private static readonly MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
 
     constructor() {
         const bucketName = process.env.AWS_BUCKET_NAME;
@@ -38,19 +41,20 @@ export class MediaService {
         });
     }
 
-    async getSignedUploadUrl(contentType: Zod.infer<typeof contentTypeDto>): Promise<SignedUploadUrlResponse> {
-        const validatedContentType = contentTypeDto.parse(contentType);
-        const key = `${S3_FOLDER_NAME}/${uuidv4()}`;
+    async getSignedUploadUrl(request: z.infer<typeof signedUploadUrlRequestDto>): Promise<SignedUploadUrlResponse> {
+        const { contentType, folderName } = signedUploadUrlRequestDto.parse(request);
+
+        const key = `${folderName}/${uuidv4()}`;
 
         const { url, fields } = await createPresignedPost(this.s3Client, {
             Bucket: this.bucketName,
             Key: key,
             Conditions: [
-                ['content-length-range', 1, MAX_MEDIA_SIZE],
-                ['eq', '$Content-Type', validatedContentType],
+                ['content-length-range', 1, MediaService.MAX_FILE_SIZE],
+                ['eq', '$Content-Type', contentType],
             ],
             Fields: {
-                'Content-Type': validatedContentType,
+                'Content-Type': contentType,
             },
             Expires: 3600,
         });
