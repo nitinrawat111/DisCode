@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { userControllerInstance } from '../../../controllers/users.controller';
+import { userControllerInstance } from '../../../controllers/user.controller';
 import * as asyncHandler from 'express-async-handler';
 import { parseUserHeaders } from '../../../middlewares/parseUserHeaders.middleware';
 

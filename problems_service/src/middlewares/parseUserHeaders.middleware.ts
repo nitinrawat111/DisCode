@@ -1,11 +1,11 @@
 import { Response, NextFunction } from 'express';
-import { userIdDto, userRoleDto, UserRoleEnum } from '../dtos/users.dto';
 import ApiError from '../utils/ApiError';
 import { AuthenticatedRequest } from '../types/types';
+import { userIdDto, userRoleDto, UserRoleEnum } from '../dtos/user.dto';
 
 export const parseUserHeaders = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     // Extract headers
-    const userId = req.headers['x-user-id'] as string;
+    const userId = req.headers['x-user-id'];
     const role = req.headers['x-role'] as string;
 
     // Validate presence of headers
@@ -14,7 +14,8 @@ export const parseUserHeaders = (req: AuthenticatedRequest, res: Response, next:
     }
 
     // Validate userId
-    const userIdResult = userIdDto.safeParse(userId);
+    const numericUserId  = parseInt(userId as string);
+    const userIdResult = userIdDto.safeParse(numericUserId);
     if (!userIdResult.success) {
         throw new ApiError(400, "Invalid x-user-id header");
     }

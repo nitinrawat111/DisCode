@@ -7,7 +7,7 @@ import { UserService } from '../../src/services/user.service';
 import { dbPool } from '../../src/config/db';
 import ApiError from '../../src/utils/ApiError';
 import { BCRYPT_SALT_ROUNDS } from '../../src/constants';
-import { UserRoleEnum } from '../../src/dtos/users.dto';
+import { UserRoleEnum } from '../../src/dtos/user.dto';
 
 // Enable chai-as-promised for async assertions
 use(chaiAsPromised);

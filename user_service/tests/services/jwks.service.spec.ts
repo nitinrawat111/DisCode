@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { JWKSService } from '../../src/services/jwks.service';
 import { UserJWTPayload } from '../../src/types/types';
-import { UserRoleEnum } from '../../src/dtos/users.dto';
+import { UserRoleEnum } from '../../src/dtos/user.dto';
 
 describe('JWKSService - Integration Tests', () => {
   let jwksService: JWKSService;

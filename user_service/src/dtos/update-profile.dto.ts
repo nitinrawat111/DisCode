@@ -1,5 +1,5 @@
 import zod from 'zod';
-import { usernameDto, bioDto, avatarUrlDto } from "./users.dto";
+import { usernameDto, bioDto, avatarUrlDto } from "./user.dto";
 
 export const userUpdateDto = zod.object({
     username: usernameDto.optional(),

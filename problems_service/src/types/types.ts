@@ -1,5 +1,5 @@
 import { JWTPayload } from "jose";
-import { userIdDto, UserRoleEnum } from "../dtos/users.dto";
+import { userIdDto, UserRoleEnum } from "../dtos/user.dto";
 import zod from 'zod';
 import { Request } from "express";
 

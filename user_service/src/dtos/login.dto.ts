@@ -1,5 +1,5 @@
 import zod from 'zod';
-import { emailDto, passwordDto } from './users.dto';
+import { emailDto, passwordDto } from './user.dto';
 
 export const userLoginDto = zod.object({
     email: emailDto,

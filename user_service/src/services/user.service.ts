@@ -1,5 +1,5 @@
 import { dbPool } from "../config/db";
-import { userIdDto, UserRoleEnum } from "../dtos/users.dto";
+import { userIdDto, UserRoleEnum } from "../dtos/user.dto";
 import * as bcrypt from 'bcrypt';
 import ApiError from "../utils/ApiError";
 import zod from 'zod';

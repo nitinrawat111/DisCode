@@ -1,5 +1,5 @@
 import * as pg from 'pg';
-import { userRoleDefinitionQuery, userTableCreationQuery } from '../models/users.model';
+import { userRoleDefinitionQuery, userTableCreationQuery } from '../models/user.model';
 import logger from '../utils/logger';
 
 export const dbPool = new pg.Pool({

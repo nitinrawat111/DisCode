@@ -1,11 +1,11 @@
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import * as sinon from 'sinon';
-import { UserController } from '../../src/controllers/users.controller';
+import { UserController } from '../../src/controllers/user.controller';
 import { UserService, userServiceInstance } from '../../src/services/user.service';
 import { jwksServiceInstance } from '../../src/services/jwks.service';
 import ApiResponse from '../../src/utils/ApiResponse';
-import { UserRoleEnum } from '../../src/dtos/users.dto';
+import { UserRoleEnum } from '../../src/dtos/user.dto';
 
 // Enable chai-as-promised
 use(chaiAsPromised);

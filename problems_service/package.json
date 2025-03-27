@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc && dotenvx run -f .env.dev -- node dist/src/server.js",
-    "start": "tsc && dotenvx run -f .env.production -- node dist/src/server.js",
+    "dev": "tsc && dotenvx run -f .env.dev -- node dist/server.js",
+    "start": "tsc && dotenvx run -f .env.production -- node dist/server.js",
     "test": "dotenvx run -f .env.test -- mocha"
   },
   "keywords": [],
