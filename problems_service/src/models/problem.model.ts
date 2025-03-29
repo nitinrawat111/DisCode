@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface IProblem extends Document {
-  problem_id: string;
+  problemId: string;
   title: string;
   markdownKey: string;
   testKeys: string[];
@@ -21,7 +21,7 @@ export interface IProblem extends Document {
 
 const ProblemSchema: Schema = new Schema(
   {
-    problem_id: { type: String, default: uuidv4, unique: true },
+    problemId: { type: String, default: uuidv4, unique: true },
     title: { type: String, required: true, maxlength: 100 },
     markdownKey: { type: String, required: true },
     testKeys: { type: [String], required: true, minlength: 1 },

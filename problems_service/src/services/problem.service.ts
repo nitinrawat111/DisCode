@@ -19,7 +19,7 @@ export class ProblemService {
     const validatedProblemId = problemIdDto.parse(problemId);
     const validatedUpdates = updateProblemDto.parse(updates);
     const updatedProblem = await Problem.findOneAndUpdate(
-      { problem_id: validatedProblemId },
+      { problemId: validatedProblemId },
       validatedUpdates,
       { new: true }
     );
@@ -33,7 +33,7 @@ export class ProblemService {
   
   async getProblemById(problemId: string) {
     const validatedProblemId = problemIdDto.parse(problemId);
-    const problem = await Problem.findOne({ problem_id: validatedProblemId });
+    const problem = await Problem.findOne({ problemId: validatedProblemId });
     if (!problem) {
       throw new ApiError(404, 'Problem not found');
     }
@@ -71,10 +71,10 @@ export class ProblemService {
       if (isRelevancySort) {
         paginationFilter.$or = [
           { score: { $lt: parseFloat(lastScore) } },
-          { score: parseFloat(lastScore), problem_id: { $lt: lastId } },
+          { score: parseFloat(lastScore), problemId: { $lt: lastId } },
         ];
       } else {
-        paginationFilter.problem_id =  { $lt: lastId };
+        paginationFilter.problemId =  { $lt: lastId };
       }
     }
 
@@ -85,9 +85,9 @@ export class ProblemService {
     const sortOptions: any = {};
     if (isRelevancySort) {
       sortOptions.score = -1;
-      sortOptions.problem_id = -1;
+      sortOptions.problemId = -1;
     } else {
-      sortOptions.problem_id = -1;
+      sortOptions.problemId = -1;
     }
 
     // Query the database
@@ -107,9 +107,9 @@ export class ProblemService {
       // Construct the cursor for next page
       const lastProblem = problems[problems.length - 1];
       if (isRelevancySort) {
-        nextPageCursor = `${lastProblem.textSearchScore}_${lastProblem.problem_id}`;
+        nextPageCursor = `${lastProblem.textSearchScore}_${lastProblem.problemId}`;
       } else {
-        nextPageCursor = `0_${lastProblem.problem_id}`;
+        nextPageCursor = `0_${lastProblem.problemId}`;
       }
     }
 
