@@ -24,7 +24,7 @@ export class SubmissionService {
     );
 
     // After creating submmision in DB, queue it for execution
-    codeExecutionQueueServiceInstance.queueSubmissionForExecution(validatedSubmission);
+    await codeExecutionQueueServiceInstance.queueSubmissionForExecution(validatedSubmission);
     const createdSubmission = queryResult.rows[0];
     return objKeysToCamelCase(createdSubmission);
   }
