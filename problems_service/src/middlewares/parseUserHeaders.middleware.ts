@@ -1,16 +1,16 @@
 import { Response, NextFunction } from 'express';
+import { userIdDto, userRoleDto, UserRoleEnum } from '../dtos/user.dto';
 import ApiError from '../utils/ApiError';
 import { AuthenticatedRequest } from '../types/types';
-import { userIdDto, userRoleDto, UserRoleEnum } from '../dtos/user.dto';
 
 export const parseUserHeaders = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     // Extract headers
     const userId = req.headers['x-user-id'];
-    const role = req.headers['x-role'] as string;
+    const role = req.headers['x-user-role'] as string;
 
     // Validate presence of headers
     if (!userId || !role) {
-        throw new ApiError(401, "Missing x-user-id and x-role headers");
+        throw new ApiError(401, "Missing x-user-id and x-user-role headers");
     }
 
     // Validate userId
@@ -23,7 +23,7 @@ export const parseUserHeaders = (req: AuthenticatedRequest, res: Response, next:
     // Validate role using userRoleDto
     const roleResult = userRoleDto.safeParse(role);
     if (!roleResult.success) {
-        throw new ApiError(400, "Invalid x-role header");
+        throw new ApiError(400, "Invalid x-user-role header");
     }
 
     // Attach the parsed and validated user data to req.user

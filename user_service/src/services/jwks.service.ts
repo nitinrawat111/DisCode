@@ -19,6 +19,13 @@ export class JWKSService {
         await this.addNewKey();
         this.getPublicKey = createLocalJWKSet(this.jwks);
         this.setupKeyRotationJobs();
+
+        // Clear the promise once init is successful
+        this.initPromise = null;
+    }
+
+    public waitForInit(): Promise<void> {
+        return this.initPromise;
     }
 
     private async addNewKey() {
@@ -49,10 +56,6 @@ export class JWKSService {
         cron.schedule("0 0 * * 0", async () => {
             this.removeExpiredKey();
         });
-    }
-
-    public waitForInit(): Promise<void> {
-        return this.initPromise;
     }
 
     public getJwks(): JWKS {

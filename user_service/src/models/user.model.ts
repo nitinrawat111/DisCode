@@ -18,6 +18,6 @@ export const userTableCreationQuery = `
         role ROLE_TYPE NOT NULL DEFAULT 'normal',
         bio VARCHAR(200),
         avatar_url TEXT,
-        craeted_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
 `;
