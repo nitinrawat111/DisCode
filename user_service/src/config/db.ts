@@ -8,6 +8,9 @@ export const dbPool = new pg.Pool({
     database: process.env.POSTGRES_DB_NAME,
     user: process.env.POSTGRES_USERNAME,
     password: process.env.POSTGRES_PASSWORD,
+    ssl: {
+       rejectUnauthorized: true 
+    }
 });
 
 // Function to initialize DB
