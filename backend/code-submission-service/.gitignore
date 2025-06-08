@@ -1,6 +1,7 @@
 dist/
 logs/
 node_modules/
+.turbo
 
 .env
 .env.dev

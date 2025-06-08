@@ -1,5 +1,5 @@
 {
-  "name": "user-service",
+  "name": "@discode/media-service",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -7,7 +7,7 @@
     "dev": "tsc && dotenvx run -f .env.dev -- node dist/src/server.js",
     "start": "tsc && dotenvx run -f .env.production -- node dist/src/server.js",
     "test": "dotenvx run -f .env.test -- mocha",
-    "lint": "eslint .",
+    "lint": "eslint . --fix",
     "pretty": "prettier --write ."
   },
   "keywords": [],
