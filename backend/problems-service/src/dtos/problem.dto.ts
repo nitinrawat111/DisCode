@@ -1,7 +1,7 @@
-import zod from 'zod';
+import zod from "zod";
 
 export const problemIdDto = zod.string().uuid();
-export const difficultyDto = zod.enum(['easy', 'medium', 'hard']);
+export const difficultyDto = zod.enum(["easy", "medium", "hard"]);
 export const tagsDto = zod.array(zod.string()).min(1);
 export const markdownKeyDto = zod.string().min(1);
 export const testKeysDto = zod.array(zod.string()).min(1);

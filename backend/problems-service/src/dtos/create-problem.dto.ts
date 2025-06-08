@@ -1,5 +1,11 @@
-import zod from 'zod';
-import { titleDto, markdownKeyDto, testKeysDto, difficultyDto, tagsDto } from './problem.dto';
+import zod from "zod";
+import {
+  titleDto,
+  markdownKeyDto,
+  testKeysDto,
+  difficultyDto,
+  tagsDto,
+} from "./problem.dto";
 
 export const createProblemDto = zod.object({
   title: titleDto,

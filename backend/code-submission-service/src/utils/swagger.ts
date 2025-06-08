@@ -8,30 +8,30 @@ import { SERVICE_NAME } from "../constants";
  * @param version Refers to the api version
  * @returns a swagger specification which can be used by swagger-ui-express to provide api docs
  */
-export function getSwaggerDoc (version: number = 1) {
-    const jsDocOptions = {
-        // Whether or not to throw when parsing errors
-        failOnErrors: true,
+export function getSwaggerDoc(version: number = 1) {
+  const jsDocOptions = {
+    // Whether or not to throw when parsing errors
+    failOnErrors: true,
 
-        // Swagger Definition
-        definition: {
-            openapi: '3.0.0',
-            servers: [
-                {
-                    url: `/api/v${version}`, // Base URL for this version of the API
-                    description: `Version ${version} API`,
-                },
-            ],
-            info: {
-                title: SERVICE_NAME as string,
-                version: `${version}`,
-            },
+    // Swagger Definition
+    definition: {
+      openapi: "3.0.0",
+      servers: [
+        {
+          url: `/api/v${version}`, // Base URL for this version of the API
+          description: `Version ${version} API`,
         },
+      ],
+      info: {
+        title: SERVICE_NAME as string,
+        version: `${version}`,
+      },
+    },
 
-        // Path to the API docs
-        // Note that this path is relative to the directory from which the Node.js application is executed
-        apis: [`./src/routes/api/v${version}/**/*.ts`],
-    }
+    // Path to the API docs
+    // Note that this path is relative to the directory from which the Node.js application is executed
+    apis: [`./src/routes/api/v${version}/**/*.ts`],
+  };
 
-    return swaggerJSDoc(jsDocOptions);
-};
+  return swaggerJSDoc(jsDocOptions);
+}

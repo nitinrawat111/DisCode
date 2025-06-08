@@ -1,49 +1,59 @@
-import zod from 'zod';
-import ApiError from '../utils/ApiError';
-import Problem from '../models/problem.model';
-import { createProblemDto } from '../dtos/create-problem.dto';
-import { updateProblemDto } from '../dtos/update-problem.dto';
-import { problemIdDto } from '../dtos/problem.dto';
-import { userIdDto } from '../dtos/user.dto';
-import { getProblemsQueryDto } from '../dtos/get-problems-query.dto';
+import zod from "zod";
+import ApiError from "../utils/ApiError";
+import Problem from "../models/problem.model";
+import { createProblemDto } from "../dtos/create-problem.dto";
+import { updateProblemDto } from "../dtos/update-problem.dto";
+import { problemIdDto } from "../dtos/problem.dto";
+import { userIdDto } from "../dtos/user.dto";
+import { getProblemsQueryDto } from "../dtos/get-problems-query.dto";
 
 export class ProblemService {
-  async createProblem(problemDetails: zod.infer<typeof createProblemDto>, userId: number) {
+  async createProblem(
+    problemDetails: zod.infer<typeof createProblemDto>,
+    userId: number,
+  ) {
     const validatedProblem = createProblemDto.parse(problemDetails);
     const validatedUserId = userIdDto.parse(userId);
-    const newProblem = await Problem.create({ ...validatedProblem, createdBy: validatedUserId });
+    const newProblem = await Problem.create({
+      ...validatedProblem,
+      createdBy: validatedUserId,
+    });
     return newProblem;
   }
-  
-  async updateProblem(problemId: string, updates: zod.infer<typeof updateProblemDto>) {
+
+  async updateProblem(
+    problemId: string,
+    updates: zod.infer<typeof updateProblemDto>,
+  ) {
     const validatedProblemId = problemIdDto.parse(problemId);
     const validatedUpdates = updateProblemDto.parse(updates);
     const updatedProblem = await Problem.findOneAndUpdate(
       { problemId: validatedProblemId },
       validatedUpdates,
-      { new: true }
+      { new: true },
     );
 
     if (!updatedProblem) {
-      throw new ApiError(404, 'Problem not found');
+      throw new ApiError(404, "Problem not found");
     }
-    
+
     return updatedProblem;
   }
-  
+
   async getProblemById(problemId: string) {
     const validatedProblemId = problemIdDto.parse(problemId);
     const problem = await Problem.findOne({ problemId: validatedProblemId });
     if (!problem) {
-      throw new ApiError(404, 'Problem not found');
+      throw new ApiError(404, "Problem not found");
     }
     return problem;
   }
 
   async getProblems(query: zod.infer<typeof getProblemsQueryDto>) {
-    const { searchQuery, tags, difficulty, limit, cursor, sort } = getProblemsQueryDto.parse(query);
-    const isRelevancySort = sort === 'relevancy' && searchQuery;
-    
+    const { searchQuery, tags, difficulty, limit, cursor, sort } =
+      getProblemsQueryDto.parse(query);
+    const isRelevancySort = sort === "relevancy" && searchQuery;
+
     // Base query
     const filter: any = {};
 
@@ -62,10 +72,10 @@ export class ProblemService {
     // Cursor-based pagination
     const paginationFilter: any = {};
     if (cursor) {
-      const [lastScore, lastId] = cursor.split('_');
+      const [lastScore, lastId] = cursor.split("_");
 
-      if(isNaN(parseFloat(lastScore)) || !lastId) {
-        throw new ApiError(400, 'Invalid cursor');
+      if (isNaN(parseFloat(lastScore)) || !lastId) {
+        throw new ApiError(400, "Invalid cursor");
       }
 
       if (isRelevancySort) {
@@ -74,7 +84,7 @@ export class ProblemService {
           { score: parseFloat(lastScore), problemId: { $lt: lastId } },
         ];
       } else {
-        paginationFilter.problemId =  { $lt: lastId };
+        paginationFilter.problemId = { $lt: lastId };
       }
     }
 
@@ -94,7 +104,9 @@ export class ProblemService {
     const problems = await Problem.find(combinedFilter)
       .sort(sortOptions)
       .limit(limit + 1) // Fetch one extra to check if there's a next page
-      .select(isRelevancySort ? { textSearchScore: { $meta: 'textScore' } } : {}) // Include text search score if sorting by relevancy
+      .select(
+        isRelevancySort ? { textSearchScore: { $meta: "textScore" } } : {},
+      ) // Include text search score if sorting by relevancy
       .lean();
 
     // Determine if there's a next page
@@ -103,7 +115,7 @@ export class ProblemService {
     if (hasNextPage) {
       // Remove the extra item
       problems.pop();
-      
+
       // Construct the cursor for next page
       const lastProblem = problems[problems.length - 1];
       if (isRelevancySort) {
@@ -116,7 +128,7 @@ export class ProblemService {
     return {
       problems,
       nextPageCursor,
-      hasNextPage
+      hasNextPage,
     };
   }
 }

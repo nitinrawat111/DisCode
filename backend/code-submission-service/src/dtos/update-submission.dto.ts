@@ -1,5 +1,14 @@
-import zod from 'zod';
-import { submissionIdDto, statusDto, runtimeDto, memoryUsedDto, testCasesPassedDto, totalTestCasesDto, errorMessageDto, executedAtDto } from './submission.dto';
+import zod from "zod";
+import {
+  submissionIdDto,
+  statusDto,
+  runtimeDto,
+  memoryUsedDto,
+  testCasesPassedDto,
+  totalTestCasesDto,
+  errorMessageDto,
+  executedAtDto,
+} from "./submission.dto";
 
 export const updateSubmissionDto = zod.object({
   submissionId: submissionIdDto,

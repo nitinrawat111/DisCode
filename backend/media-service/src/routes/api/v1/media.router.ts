@@ -1,6 +1,6 @@
-import * as express from 'express';
-import { mediaControllerInstance } from '../../../controllers/media.controller';
-import * as asyncHandler from 'express-async-handler';
+import * as express from "express";
+import { mediaControllerInstance } from "../../../controllers/media.controller";
+import * as asyncHandler from "express-async-handler";
 
 const router = express.Router();
 
@@ -60,6 +60,9 @@ const router = express.Router();
  *       400:
  *         description: "Invalid content type"
  */
-router.post('/upload-url', asyncHandler(mediaControllerInstance.getSignedUploadUrl));
+router.post(
+  "/upload-url",
+  asyncHandler(mediaControllerInstance.getSignedUploadUrl),
+);
 
 export default router;

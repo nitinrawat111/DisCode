@@ -1,6 +1,6 @@
-import zod from 'zod';
-import { problemIdDto } from './submission.dto';
-import { userIdDto } from './user.dto';
+import zod from "zod";
+import { problemIdDto } from "./submission.dto";
+import { userIdDto } from "./user.dto";
 
 export const getSubmissionsQueryDto = zod.object({
   userId: userIdDto.optional(),

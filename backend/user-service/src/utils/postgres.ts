@@ -1,4 +1,4 @@
-import * as pg from 'pg';
+import * as pg from "pg";
 
 /**
  * Returns true if the error is caused because if inserting a duplicate value in unique field
@@ -6,5 +6,5 @@ import * as pg from 'pg';
  * @returns true if error is a duplicate key error, otherwise retruns false
  */
 export function isDuplicateKeyError(err: any) {
-    return err instanceof pg.DatabaseError && err.code == "23505";
+  return err instanceof pg.DatabaseError && err.code == "23505";
 }

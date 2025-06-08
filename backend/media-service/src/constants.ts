@@ -1,1 +1,1 @@
-export const SERVICE_NAME = 'media-service';
+export const SERVICE_NAME = "media-service";

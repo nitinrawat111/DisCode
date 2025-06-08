@@ -10,7 +10,10 @@ import { codeExecutionQueueServiceInstance } from "./code-execution-queue.servic
 import { userIdDto } from "../dtos/user.dto";
 
 export class SubmissionService {
-  async createSubmission(submissionDetails: zod.infer<typeof createSubmissionDto>, userId: zod.infer<typeof userIdDto>) {
+  async createSubmission(
+    submissionDetails: zod.infer<typeof createSubmissionDto>,
+    userId: zod.infer<typeof userIdDto>,
+  ) {
     const validatedUserId = userIdDto.parse(userId);
     const validatedSubmission = createSubmissionDto.parse(submissionDetails);
     const queryResult = await dbPool.query(
@@ -20,16 +23,20 @@ export class SubmissionService {
         validatedSubmission.problemId,
         validatedSubmission.language,
         validatedSubmission.submissionKey,
-      ]
+      ],
     );
 
     // After creating submmision in DB, queue it for execution
-    await codeExecutionQueueServiceInstance.queueSubmissionForExecution(validatedSubmission);
+    await codeExecutionQueueServiceInstance.queueSubmissionForExecution(
+      validatedSubmission,
+    );
     const createdSubmission = queryResult.rows[0];
     return objKeysToCamelCase(createdSubmission);
   }
 
-  async updateSubmission(submissionDetails: zod.infer<typeof updateSubmissionDto>) {
+  async updateSubmission(
+    submissionDetails: zod.infer<typeof updateSubmissionDto>,
+  ) {
     const validatedSubmission = updateSubmissionDto.parse(submissionDetails);
     const queryResult = await dbPool.query(
       `UPDATE submissions 
@@ -50,7 +57,7 @@ export class SubmissionService {
         validatedSubmission.errorMessage,
         validatedSubmission.executedAt,
         validatedSubmission.submissionId,
-      ]
+      ],
     );
 
     if (queryResult.rowCount === 0) {
@@ -62,7 +69,7 @@ export class SubmissionService {
     const validatedSubmissionId = submissionIdDto.parse(submissionId);
     const queryResult = await dbPool.query(
       `SELECT * FROM submissions WHERE submission_id = $1`,
-      [validatedSubmissionId]
+      [validatedSubmissionId],
     );
 
     if (queryResult.rowCount === 0) {
@@ -91,7 +98,8 @@ export class SubmissionService {
       values.push(validatedQuery.problemId);
     }
 
-    const whereClause = filters.length > 0 ? `WHERE ${filters.join(' AND ')}` : '';
+    const whereClause =
+      filters.length > 0 ? `WHERE ${filters.join(" AND ")}` : "";
 
     // Pagination
     const offset = (validatedQuery.page - 1) * validatedQuery.limit;
@@ -100,14 +108,17 @@ export class SubmissionService {
     // Queries
     const submissionQuery = dbPool.query(
       `SELECT * FROM submissions ${whereClause} ORDER BY created_at DESC LIMIT $${index++} OFFSET $${index}`,
-      values
+      values,
     );
     const countQuery = dbPool.query(
       `SELECT COUNT(*) AS total FROM submissions ${whereClause}`,
-      values.slice(0, index - 2)  // Use only filter values for the count query, not using limit and offset
+      values.slice(0, index - 2), // Use only filter values for the count query, not using limit and offset
     );
 
-    const [countResult, submissionsResult] = await Promise.all([countQuery, submissionQuery]);
+    const [countResult, submissionsResult] = await Promise.all([
+      countQuery,
+      submissionQuery,
+    ]);
     const totalSubmissions = parseInt(countResult.rows[0].total, 10);
     const totalPages = Math.ceil(totalSubmissions / validatedQuery.limit);
 

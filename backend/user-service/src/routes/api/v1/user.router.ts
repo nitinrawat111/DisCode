@@ -1,7 +1,7 @@
-import * as express from 'express';
-import { userControllerInstance } from '../../../controllers/user.controller';
-import * as asyncHandler from 'express-async-handler';
-import { parseUserHeaders } from '../../../middlewares/parseUserHeaders.middleware';
+import * as express from "express";
+import { userControllerInstance } from "../../../controllers/user.controller";
+import * as asyncHandler from "express-async-handler";
+import { parseUserHeaders } from "../../../middlewares/parseUserHeaders.middleware";
 
 const router = express.Router();
 
@@ -90,7 +90,7 @@ const router = express.Router();
  *                   type: string
  *                   example: "Email already exists"
  */
-router.post('/register', asyncHandler(userControllerInstance.register));
+router.post("/register", asyncHandler(userControllerInstance.register));
 
 /**
  * @swagger
@@ -182,7 +182,7 @@ router.post('/register', asyncHandler(userControllerInstance.register));
  *                   type: string
  *                   example: "Email not found"
  */
-router.post('/login', asyncHandler(userControllerInstance.login));
+router.post("/login", asyncHandler(userControllerInstance.login));
 
 /**
  * @swagger
@@ -242,7 +242,11 @@ router.post('/login', asyncHandler(userControllerInstance.login));
  *                   type: string
  *                   example: "User not found"
  */
-router.get('/profile', parseUserHeaders, asyncHandler(userControllerInstance.getLoggedUserProfile));
+router.get(
+  "/profile",
+  parseUserHeaders,
+  asyncHandler(userControllerInstance.getLoggedUserProfile),
+);
 
 /**
  * @swagger
@@ -318,7 +322,10 @@ router.get('/profile', parseUserHeaders, asyncHandler(userControllerInstance.get
  *                   type: string
  *                   example: "User not found"
  */
-router.get('/profile/:userId', asyncHandler(userControllerInstance.getUserProfile));
+router.get(
+  "/profile/:userId",
+  asyncHandler(userControllerInstance.getUserProfile),
+);
 
 /**
  * @swagger
@@ -397,7 +404,11 @@ router.get('/profile/:userId', asyncHandler(userControllerInstance.getUserProfil
  *                   type: string
  *                   example: "Username already exists"
  */
-router.patch('/profile', parseUserHeaders, asyncHandler(userControllerInstance.updateProfile));
+router.patch(
+  "/profile",
+  parseUserHeaders,
+  asyncHandler(userControllerInstance.updateProfile),
+);
 
 /**
  * @swagger
@@ -461,7 +472,7 @@ router.patch('/profile', parseUserHeaders, asyncHandler(userControllerInstance.u
  *                   type: string
  *                   example: "UserId not found"
  */
-router.get('/role/:userId', asyncHandler(userControllerInstance.getUserRole));
+router.get("/role/:userId", asyncHandler(userControllerInstance.getUserRole));
 
 /**
  * @swagger
@@ -551,6 +562,10 @@ router.get('/role/:userId', asyncHandler(userControllerInstance.getUserRole));
  *                   type: string
  *                   example: "UserId not found"
  */
-router.put('/role/:userId', parseUserHeaders, asyncHandler(userControllerInstance.changeRole));
+router.put(
+  "/role/:userId",
+  parseUserHeaders,
+  asyncHandler(userControllerInstance.changeRole),
+);
 
 export default router;

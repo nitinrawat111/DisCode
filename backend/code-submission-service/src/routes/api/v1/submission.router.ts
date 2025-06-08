@@ -42,7 +42,11 @@ const router = express.Router();
  *       400:
  *         description: "Invalid request body"
  */
-router.post("/", parseUserHeaders, asyncHandler(submissionControllerInstance.createSubmission));
+router.post(
+  "/",
+  parseUserHeaders,
+  asyncHandler(submissionControllerInstance.createSubmission),
+);
 
 /**
  * @swagger
@@ -63,7 +67,10 @@ router.post("/", parseUserHeaders, asyncHandler(submissionControllerInstance.cre
  *       404:
  *         description: "Submission not found"
  */
-router.get("/:submissionId", asyncHandler(submissionControllerInstance.getSubmissionById));
+router.get(
+  "/:submissionId",
+  asyncHandler(submissionControllerInstance.getSubmissionById),
+);
 
 /**
  * @swagger
