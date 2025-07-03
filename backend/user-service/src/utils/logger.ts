@@ -1,33 +1,9 @@
-import * as winston from "winston";
-import * as uuid from "uuid";
-import * as DailyRotateFile from "winston-daily-rotate-file";
-import LokiTransport from "winston-loki";
 import { SERVICE_NAME } from "../constants";
+import { format, createLogger, transports } from "winston";
+import DailyRotateFile from "winston-daily-rotate-file"; // This provides
 
-// Creating a new winston format to add some required fields to JSON logs
-const customJsonFormatFactory = winston.format((info, opts) => {
-  info.id = uuid.v4();
-  info.SERVICE_NAME = SERVICE_NAME;
-  return info;
-});
-const customJsonFormat = customJsonFormatFactory();
-const logFormat = winston.format.combine(
-  winston.format.timestamp(),
-  winston.format.json(),
-  customJsonFormat,
-);
-
-// Defining console logging format
-const consoleLogFormat = winston.format.printf(
-  ({ level, message, label, timestamp }) => {
-    return `[${SERVICE_NAME}] [${level}] ${message}\n------------------------------------------------------------------------`;
-  },
-);
-
-const logger = winston.createLogger({
-  // Custon Format we defined above
-  format: logFormat,
-
+// TODO: Add service name & uuids to logs
+export const Logger = createLogger({
   transports: [
     // File transport
     new DailyRotateFile({
@@ -39,29 +15,13 @@ const logger = winston.createLogger({
       zippedArchive: true,
       maxSize: "20m",
       maxFiles: "30d",
+      format: format.json(),
     }),
 
     // Console transport
-    new winston.transports.Console({
+    new transports.Console({
       level: process.env.CONSOLE_LOG_LEVEL,
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple(),
-        consoleLogFormat,
-      ),
+      format: format.combine(format.colorize(), format.simple()),
     }),
-
-    // Grafana Loki transport
-    // new LokiTransport({
-    //     host: process.env.GRAFANA_LOKI_HOST as string,
-    //     json: true,
-    //     replaceTimestamp: true,
-    //     onConnectionError: (err) => {
-    //         // TODO add something meaningful here
-    //         // Do nothing for now.
-    //     },
-    // })
   ],
 });
-
-export default logger;

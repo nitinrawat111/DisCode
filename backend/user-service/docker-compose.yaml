@@ -1,0 +1,12 @@
+name: user-service
+services:
+  user-service-db:
+    image: postgres:17
+    container_name: user-service-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: discode

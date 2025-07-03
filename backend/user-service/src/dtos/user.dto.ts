@@ -1,18 +1,52 @@
-import zod from "zod";
+import { z } from "zod/v4";
+import { UserRole } from "../types/db";
 
-export enum UserRoleEnum {
-  SUPERADMIN = "superadmin",
-  ADMIN = "admin",
-  MODERATOR = "moderator",
-  NORMAL = "normal",
-}
+////////////////////////////////////////////
+// Common Dtos
+////////////////////////////////////////////
+export const UsernameDto = z.string().max(30);
+export const EmailDto = z.email();
+export const PasswordDto = z.string().min(8);
+export const BioDto = z.string();
+export const AvatarUrlDto = z.string();
+export const UserIdDto = z.number().int().positive();
+export const UserRoleDto = z.enum(UserRole);
 
-export const usernameDto = zod.string().max(30);
-export const emailDto = zod.string().email();
-export const passwordDto = zod.string().min(8);
-export const bioDto = zod.string();
-export const avatarUrlDto = zod.string();
-export const userIdDto = zod.number().int().positive();
-export const userRoleDto = zod.enum(
-  Object.values(UserRoleEnum) as [string, ...string[]],
-);
+////////////////////////////////////////////
+// Register Request Dto
+////////////////////////////////////////////
+export const RegisterRequestDto = z.object({
+  username: UsernameDto,
+  email: EmailDto,
+  password: PasswordDto,
+  bio: BioDto.nullish(),
+  avatar_url: AvatarUrlDto.nullish(),
+});
+export type RegisterRequest = z.infer<typeof RegisterRequestDto>;
+
+////////////////////////////////////////////
+// Login Request Dto
+////////////////////////////////////////////
+export const LoginRequestDto = z.object({
+  email: EmailDto,
+  password: PasswordDto,
+});
+export type LoginRequest = z.infer<typeof LoginRequestDto>;
+
+////////////////////////////////////////////
+// Change Role Request Dto
+////////////////////////////////////////////
+export const ChangeRoleRequestDto = z.object({
+  new_role: UserRoleDto,
+});
+export type ChangeRoleRequest = z.infer<typeof ChangeRoleRequestDto>;
+
+////////////////////////////////////////////
+// Update Profile Request Dto
+////////////////////////////////////////////
+export const UpdateProfileRequestDto = z.object({
+  username: UsernameDto.nullish(),
+  bio: BioDto.nullish(),
+  avatar_url: AvatarUrlDto.nullish(),
+});
+export type UpdateProfileRequest = z.infer<typeof UpdateProfileRequestDto>;

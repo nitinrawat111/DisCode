@@ -1,19 +1,18 @@
-import * as cors from "cors";
-import logger from "./utils/logger";
-import ApiError from "./utils/ApiError";
-import ApiResponse from "./utils/ApiResponse";
-import v1Router from "./routes/api/v1/v1.router";
-import morganMiddleware from "./middlewares/morgan.middleware";
-import { NextFunction, Request, Response } from "express";
-import * as express from "express";
-import { dbInit } from "./config/db";
-import { ZodError } from "zod";
-import { jwksServiceInstance } from "./services/jwks.service";
+import cors from "cors";
+import { Logger } from "./utils/logger";
+import { ApiError } from "./utils/ApiError";
+import { ApiResponse } from "./utils/ApiResponse";
+import { V1Router } from "./routes/api/v1/v1.router";
+import { morganMiddleware } from "./middlewares/morgan.middleware";
+import express, { NextFunction, Request, Response } from "express";
+import { z, ZodError } from "zod/v4";
+import { JwksServiceInstance } from "./services/jwks.service";
 
 ////////////////////////////////////////////////////////////
 // Express App Initialization
+// Exporting for testing
 ////////////////////////////////////////////////////////////
-const app = express();
+export const app = express();
 
 ////////////////////////////////////////////////////////////
 // Middlewares
@@ -30,14 +29,15 @@ app.use(
 ////////////////////////////////////////////////////////////
 // Routes
 ////////////////////////////////////////////////////////////
-app.use("/api/v1", v1Router);
+app.use("/api/v1", V1Router);
 
 ////////////////////////////////////////////////////////////
 // Error Handler
 ////////////////////////////////////////////////////////////
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (res.headersSent) {
+app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
+  if (res.headersSent === true) {
     next(err);
+    return;
   }
 
   if (err instanceof ApiError) {
@@ -47,34 +47,31 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
       .json(
         new ApiResponse(err.statusCode, err.message, undefined, err.errors),
       );
-    logger.debug(err.stack);
+    Logger.debug(err.stack);
   } else if (err instanceof ZodError) {
     // Handle Zod Validation Errors
+    // Send formatted zod errors are response
     res
       .status(400)
-      .json(new ApiResponse(400, "Invalid Request", undefined, err.format()));
-    logger.debug(err.stack);
+      .json(
+        new ApiResponse(400, "Invalid Request", undefined, z.treeifyError(err)),
+      );
+    Logger.debug(err.stack);
   } else {
     // In case of any other error
     res.status(500).json(new ApiResponse(500, "Internal Server Error!"));
-    logger.error(err.stack);
+    Logger.error(err.stack);
   }
 });
 
 ////////////////////////////////////////////////////////////
 // Server Initialization
 ////////////////////////////////////////////////////////////
-const PORT = process.env.PORT;
+const PORT = parseInt(process.env.PORT);
 async function init() {
-  await dbInit();
-  await jwksServiceInstance.waitForInit();
+  await JwksServiceInstance.waitForInit();
   app.listen(PORT, () => {
-    logger.info(`Server started on PORT: ${PORT}`);
+    Logger.info(`Server started on PORT: ${PORT}`);
   });
 }
 init();
-
-////////////////////////////////////////////////////////////
-// Exporting Express app for testing
-////////////////////////////////////////////////////////////
-export default app;

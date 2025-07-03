@@ -1,9 +1,21 @@
-import * as express from "express";
-import { userControllerInstance } from "../../../controllers/user.controller";
-import * as asyncHandler from "express-async-handler";
+import { Router } from "express";
+import { UserControllerInstance } from "../../../controllers/user.controller";
+import { getBodyValidationMiddleware } from "../../../middlewares/validation.middleware";
+import {
+  LoginRequest,
+  LoginRequestDto,
+  RegisterRequest,
+  RegisterRequestDto,
+} from "../../../dtos/user.dto";
+import { ApiResponse } from "../../../utils/ApiResponse";
 import { parseUserHeaders } from "../../../middlewares/parseUserHeaders.middleware";
+import { UserProfile } from "../../../types/db";
+import { UserJWTPayload } from "../../../types";
 
-const router = express.Router();
+export const UserRouter = Router();
+export type UserIdParam = {
+  userId: string;
+};
 
 /**
  * @swagger
@@ -90,7 +102,11 @@ const router = express.Router();
  *                   type: string
  *                   example: "Email already exists"
  */
-router.post("/register", asyncHandler(userControllerInstance.register));
+UserRouter.post<"/register", unknown, ApiResponse, RegisterRequest>(
+  "/register",
+  getBodyValidationMiddleware(RegisterRequestDto),
+  UserControllerInstance.register,
+);
 
 /**
  * @swagger
@@ -182,7 +198,11 @@ router.post("/register", asyncHandler(userControllerInstance.register));
  *                   type: string
  *                   example: "Email not found"
  */
-router.post("/login", asyncHandler(userControllerInstance.login));
+UserRouter.post<"/login", unknown, ApiResponse, LoginRequest>(
+  "/login",
+  getBodyValidationMiddleware(LoginRequestDto),
+  UserControllerInstance.login,
+);
 
 /**
  * @swagger
@@ -242,11 +262,14 @@ router.post("/login", asyncHandler(userControllerInstance.login));
  *                   type: string
  *                   example: "User not found"
  */
-router.get(
+UserRouter.get<
   "/profile",
-  parseUserHeaders,
-  asyncHandler(userControllerInstance.getLoggedUserProfile),
-);
+  unknown,
+  ApiResponse<UserProfile>,
+  unknown,
+  unknown,
+  UserJWTPayload
+>("/profile", parseUserHeaders, UserControllerInstance.getLoggedUserProfile);
 
 /**
  * @swagger
@@ -322,10 +345,7 @@ router.get(
  *                   type: string
  *                   example: "User not found"
  */
-router.get(
-  "/profile/:userId",
-  asyncHandler(userControllerInstance.getUserProfile),
-);
+UserRouter.get("/profile/:userId", UserControllerInstance.getUserProfile);
 
 /**
  * @swagger
@@ -404,10 +424,10 @@ router.get(
  *                   type: string
  *                   example: "Username already exists"
  */
-router.patch(
+UserRouter.patch(
   "/profile",
   parseUserHeaders,
-  asyncHandler(userControllerInstance.updateProfile),
+  UserControllerInstance.updateProfile,
 );
 
 /**
@@ -472,7 +492,7 @@ router.patch(
  *                   type: string
  *                   example: "UserId not found"
  */
-router.get("/role/:userId", asyncHandler(userControllerInstance.getUserRole));
+UserRouter.get("/role/:userId", UserControllerInstance.getUserRole);
 
 /**
  * @swagger
@@ -562,10 +582,8 @@ router.get("/role/:userId", asyncHandler(userControllerInstance.getUserRole));
  *                   type: string
  *                   example: "UserId not found"
  */
-router.put(
+UserRouter.put(
   "/role/:userId",
   parseUserHeaders,
-  asyncHandler(userControllerInstance.changeRole),
+  UserControllerInstance.changeRole,
 );
-
-export default router;

@@ -1,78 +1,74 @@
 import {
   createLocalJWKSet,
   exportJWK,
-  FlattenedJWSInput,
   generateKeyPair,
-  importJWK,
-  JWSHeaderParameters,
+  JSONWebKeySet,
   jwtVerify,
   SignJWT,
 } from "jose";
-import { JWKS, JWKSPrivateKey, UserJWTPayload } from "../types/types";
-import * as cron from "node-cron";
+import { JWKSPrivateKey, UserJWTPayload } from "../types";
+import { schedule } from "node-cron";
 import { v4 as uuidv4 } from "uuid";
 import { ACCESS_TOKEN_EXPIRATION_TIME } from "../constants";
 
 export class JWKSService {
+  private static readonly algorithm = "RS256";
   private initPromise: Promise<void>;
-  private readonly algorithm = "RS256";
   private privateKeys: JWKSPrivateKey[] = [];
-  private jwks: JWKS = { keys: [] };
-  private async getPublicKey(
-    protectedHeader?: JWSHeaderParameters,
-    token?: FlattenedJWSInput,
-  ): Promise<CryptoKey> {
-    return new CryptoKey();
-  }
+  private jwks: JSONWebKeySet = { keys: [] };
+  private getPublicKey: ReturnType<typeof createLocalJWKSet>;
 
   constructor() {
+    this.setupKeyRotationJobs();
     this.initPromise = this.init();
   }
 
   private async init() {
     await this.addNewKey();
     this.getPublicKey = createLocalJWKSet(this.jwks);
-    this.setupKeyRotationJobs();
 
     // Clear the promise once init is successful
     this.initPromise = null;
   }
 
-  public waitForInit(): Promise<void> {
-    return this.initPromise;
-  }
-
   private async addNewKey() {
-    const { publicKey, privateKey } = await generateKeyPair(this.algorithm);
+    const { publicKey, privateKey } = await generateKeyPair(
+      JWKSService.algorithm,
+    );
     const kid = uuidv4(); // Generate a unique key ID
+
+    this.privateKeys.push({ key: privateKey, kid });
 
     const jwk = await exportJWK(publicKey);
     jwk.kid = kid;
-
     this.jwks.keys.push(jwk);
-    this.privateKeys.push({ key: privateKey, kid });
   }
 
   private removeExpiredKey() {
+    // Make sure we don't remove all keys
     if (this.jwks.keys.length > 1) {
-      const removedKey = this.jwks.keys.shift();
+      this.jwks.keys.shift();
       this.privateKeys.shift();
     }
   }
 
   private setupKeyRotationJobs() {
     // Adds a new key every 24 hours
-    cron.schedule("0 0 * * *", async () => {
+    schedule("0 0 * * *", async () => {
       await this.addNewKey();
     });
 
     // Removes the oldest key every 7 days
-    cron.schedule("0 0 * * 0", async () => {
+    schedule("0 0 * * 0", async () => {
       this.removeExpiredKey();
     });
   }
 
-  public getJwks(): JWKS {
+  public waitForInit(): Promise<void> {
+    return this.initPromise;
+  }
+
+  public getJwks(): JSONWebKeySet {
     return this.jwks;
   }
 
@@ -84,19 +80,26 @@ export class JWKSService {
     const latestPrivateKey = this.privateKeys[this.privateKeys.length - 1];
 
     return new SignJWT(payload)
-      .setProtectedHeader({ alg: this.algorithm, kid: latestPrivateKey.kid })
+      .setProtectedHeader({
+        alg: JWKSService.algorithm,
+        kid: latestPrivateKey.kid,
+      })
       .setExpirationTime(Date.now() + ACCESS_TOKEN_EXPIRATION_TIME)
       .sign(latestPrivateKey.key);
   }
 
   public async verifyJWT(jwt: string) {
     try {
-      const { payload } = await jwtVerify(jwt, this.getPublicKey);
-      return payload as UserJWTPayload;
-    } catch (err) {
+      const { payload } = await jwtVerify<UserJWTPayload>(
+        jwt,
+        this.getPublicKey,
+      );
+      return payload;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       throw new Error("Jwt Verification Failed");
     }
   }
 }
 
-export const jwksServiceInstance = new JWKSService();
+export const JwksServiceInstance = new JWKSService();

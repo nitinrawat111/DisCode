@@ -1,21 +1,19 @@
-import { objKeysToCamelCase } from "./camelCase";
-
 // Represents the API response object
-export default class ApiResponse {
+export class ApiResponse<DataType = unknown, ErrorType = unknown> {
   success: boolean;
   message: string;
-  data: any;
-  errors: any;
+  data: DataType;
+  errors: ErrorType;
 
   constructor(
     statusCode: number,
     message: string = "",
-    data: any = undefined,
-    errors: any = undefined,
+    data: DataType = undefined,
+    errors: ErrorType = undefined,
   ) {
     this.success = statusCode < 400;
     this.message = message;
-    this.data = objKeysToCamelCase(data);
+    this.data = data;
     this.errors = errors;
   }
 }
