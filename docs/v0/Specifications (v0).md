@@ -16,11 +16,11 @@ In v0, we are going to keep things simple. No rooms, no custom tests, no contest
 - A Problem can have multiple **tests** 
 	- Not be confused with "test cases" within a single program run. Like in those problems where input section looks like this, "*First Line contains an integer t, the number of testcases*"
 	- By multiple tests we mean that we have multiple set of inputs and would run the entire program once for each input. Each input will contain the inputs as described in problem statement. Now those inputs can either correspond to single test case in the problem domain or multiple. 
-- Submitting code and getting results. Executing user code safely without compromising our servers. [[Isolated Environment for Executing User Code]]
+- Submitting code and getting results. Executing user code safely without compromising our servers. [Isolated Environment for Executing User Code](../isolation/isolation.md)
 - Users can view code submission status  ("Queued", "Compile Error", "Runtime Error", "TLE", "WA", "Successful") 
 - They can also view the runtime, memory used and number of tests that passed (useful in case of "TLE" or "WA", etc.)
 
-### Non-Functional Requirements
+### Non-Functional Requirements (Just for fun, not to be considered currently)
 - High availability, Low latency, High scalability
 - We'll be aiming at building a highly scalable solution. So, we'll consider a hypothetical situation with high requirements. So we'll be considering **1,000,000 daily active users worldwide**
 - **Average active users per hour = 1 Million / 24 = 42,000** (We can make easy assumptions on what user does within an hour. So this is kinda helpful.)
@@ -52,36 +52,36 @@ In v0, we are going to keep things simple. No rooms, no custom tests, no contest
 
 ## System Design
 
-![[System Design]]
+See [here](System%20Design.excalidraw)
 
 ## DB Schemas
 
 ### User DB
 ```json
 {
-  "user_id": "id",
-  "username": "string",
-  "email": "string",
-  "password_hash": "string",
-  "role": "string", // "normal", "moderator", or "admin"
-  "bio": "string",
-  "avatar_url": "string",
-  "created_at": "ISODate"
+	"user_id": "id",
+	"username": "string",
+	"email": "string",
+	"password_hash": "string",
+	"role": "string", // "normal", "moderator", or "admin"
+	"bio": "string",
+	"avatar_url": "string",
+	"created_at": "ISODate"
 }
 ```
 
 ### Problems DB
 ```json
 {
-  "problemId": "id",
-  "title": "string",
-  "markdownKey": "string", // Link for problem statement markdown
-  "testKeys": ["string"],
-  "difficulty": "string", // "easy", "medium", "hard"
-  "tags": ["string"],
-  "createdBy": "userId string",
-  "createdAt": "ISODate",
-  "updatedAt": "ISODate",
+	"problemId": "id",
+	"title": "string",
+	"markdownKey": "string", // Link for problem statement markdown
+	"testKeys": ["string"],
+	"difficulty": "string", // "easy", "medium", "hard"
+	"tags": ["string"],
+	"createdBy": "userId string",
+	"createdAt": "ISODate",
+	"updatedAt": "ISODate",
 }
 
 ```
@@ -99,7 +99,7 @@ In v0, we are going to keep things simple. No rooms, no custom tests, no contest
 	// "Queued", "Compile Error", "Runtime Error", "TLE", "WA", "Successful", 
 	// "Server Error"
 	"status": "string", 
-	
+
 	"runtime": "number",
 	"memory_used": "number",
 	"test_cases_passed": "number",
@@ -111,51 +111,7 @@ In v0, we are going to keep things simple. No rooms, no custom tests, no contest
 }
 ```
 
-## DB choices
-### User DB
-- Read:Write
-	For 1 Million daily users, let's make an assumption that 10,000 new user register each day.
-	So read-write ratio is > 100:1
-- Structured data
-- Strong consistency. Writes should be reflected instantly. (User should be able to login just after registration)
-- Requires Isolation: Multiple moderators might be changing role of a single user
-- High availability & low latency & high durability 
-- PostgreSQL ✔
-### Problems DB
-- Read:Write
-	Consider a problem is created and then 100 test cases were added. Lets assume this problem will be read on an average of 100,000 times. So read-write ratio is pretty huge. Greater than 1000:1
-- Structured Data
-- High availability and low latency
-- Need isolation. (multiple moderators might be updating tests for same problem )
-- Might also need text search capabilities.
-- ScyllaDB ❌ (Resource Intensive. We also need to deploy  and we have no money :) )
-- MongoDB ✔ (Difficult to imeplement transaction isolation)
-- SQL DBs ✔ (Difficult to implement text search)
-### Submission DB
-- Read:Write
-	On average, each submission will be accessed 10 times. 5 times for checking the results after submission (client periodically checks submission status) and around 5 times for additonal reads. So, read-write ratio is something around 10:1
-- Structured Data
-- Strong consistency. Writes should be reflected instantly (Since submission status is checked frequently after submission).
-- High availability and low latency and high durability (user submits, DB goes down, the submission should still be there in DB)
-- PostgreSQL ✔
-
-## Service Responsibilities
-### User Service
-- Add a new user
-- Login user
-- Get user details
-- Provide public jwt keys for jwt verification
 ## Resources
 https://systemdesignschool.io/problems/leetcode/solution
 https://www.hellointerview.com/learn/system-design/answer-keys/leetcode
 https://medium.com/wix-engineering/how-to-choose-the-right-database-for-your-service-97b1670c5632
-
-
-
-
-
-
-
-
-
-

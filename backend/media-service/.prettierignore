@@ -1,8 +1,0 @@
-# Ignore artifacts:
-node_modules
-dist
-logs
-
-# Ignore environment files:
-*.env
-.env.*

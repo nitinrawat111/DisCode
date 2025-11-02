@@ -1,5 +1,5 @@
 {
-  description = "Dev shell with Node.js";
+  description = "Discode Nix Shell";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
   outputs = { self, nixpkgs }: {
     devShells.x86_64-linux.default = let
@@ -13,7 +13,7 @@
       ];
 
       shellHook = ''
-        echo "🔧 Dev shell ready"
+        echo "Shell Ready"
         echo "Node Version" && node -v
       '';
     };
