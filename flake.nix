@@ -13,7 +13,7 @@
       ];
 
       shellHook = ''
-        echo "Shell Seady"
+        echo "Shell Ready"
         echo "Node Version" && node -v
       '';
     };
