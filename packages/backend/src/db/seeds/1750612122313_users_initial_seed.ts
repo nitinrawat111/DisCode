@@ -1,8 +1,8 @@
 import type { Kysely } from "kysely";
-import { Database } from "../../types/db";
 import { hash } from "bcrypt";
+import { Database } from "../db";
 
-// Reference: https://github.com/kysely-org/kysely-ctl/issues/39#issuecomment-2178186380
+// Seeds Reference: https://github.com/kysely-org/kysely-ctl/issues/39#issuecomment-2178186380
 export async function seed(db: Kysely<Database>): Promise<void> {
   const password = "12345678";
   const password_hash = await hash(password, 10);

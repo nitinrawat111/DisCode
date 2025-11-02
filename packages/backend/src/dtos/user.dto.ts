@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import { UserRole } from "../types/db";
+import { UserRole } from "../models/user.model";
 
 ////////////////////////////////////////////
 // Common Dtos

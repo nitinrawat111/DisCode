@@ -1,8 +1,9 @@
 import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
-import { Database } from "../types/db";
 import { Logger } from "../utils/logger";
+import { UserTable } from "../models/user.model";
 
+// Create the Postgres dialect for Kysely
 // Reference: https://kysely.dev/docs/getting-started#instantiation
 const dialect = new PostgresDialect({
   pool: new Pool({
@@ -14,6 +15,15 @@ const dialect = new PostgresDialect({
   }),
 });
 
+////////////////////////////////////////////
+// Database Definition
+// Table names are pluralized
+////////////////////////////////////////////
+export interface Database {
+  users: UserTable;
+}
+
+// Instantiate Database
 // Reference: https://kysely.dev/docs/getting-started#instantiation
 export const DB = new Kysely<Database>({
   dialect,

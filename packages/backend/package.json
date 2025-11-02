@@ -4,22 +4,16 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "npm run build && dotenvx run -f .env.dev -- node dist/src/server.js",
-    "start": "npm run build && dotenvx run -f .env.production -- node dist/src/server.js",
+    "start": "npm run build && dotenvx run -f .env -- node dist/src/server.js",
     "lint": "eslint . --fix",
     "pretty": "prettier --write .",
-    "db:start:dev": "docker compose up -d database",
+    "db:start": "docker compose up -d database",
     "db:migrate:make": "kysely migrate:make ",
-    "db:migrate:up:dev": "dotenvx run -f .env.dev -- kysely migrate:up",
-    "db:migrate:up:prod": "dotenvx run -f .env.production -- kysely migrate:up",
-    "db:migrate:down:dev": "dotenvx run -f .env.dev -- kysely migrate:down",
-    "db:migrate:down:prod": "dotenvx run -f .env.production -- kysely migrate:down",
-    "db:migrate:latest:dev": "dotenvx run -f .env.dev -- kysely migrate:latest",
-    "db:migrate:latest:prod": "dotenvx run -f .env.production -- kysely migrate:latest",
-    "db:rollback:dev": "dotenvx run -f .env.dev -- kysely migrate:rollback",
-    "db:rollback:prod": "dotenvx run -f .env.production -- kysely migrate:rollback",
-    "db:seed:run:dev": "dotenvx run -f .env.dev -- kysely seed:run",
-    "db:seed:run:prod": "dotenvx run -f .env.production -- kysely seed:run",
+    "db:migrate:up": "dotenvx run -f .env -- kysely migrate:up",
+    "db:migrate:down": "dotenvx run -f .env -- kysely migrate:down",
+    "db:migrate:latest": "dotenvx run -f .env -- kysely migrate:latest",
+    "db:rollback": "dotenvx run -f .env -- kysely migrate:rollback",
+    "db:seed:run": "dotenvx run -f .env -- kysely seed:run",
     "db:seed:make": "kysely seed:make"
   },
   "keywords": [],
@@ -60,7 +54,6 @@
     "uuid": "^11.0.3",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0",
-    "winston-loki": "^6.1.3",
     "zod": "^3.23.8"
   }
 }

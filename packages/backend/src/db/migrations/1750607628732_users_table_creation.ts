@@ -1,6 +1,8 @@
 import { sql, type Kysely } from "kysely";
 
-// `any`(or unknown) is required here since migrations should be frozen in time. alternatively, keep a "snapshot" db interface.
+// `any`(or unknown) is required here since migrations should be frozen in time
+// Migrations should never depend on the current code of your app
+// because they need to work even when the app changes
 // For more info, see: https://kysely.dev/docs/migrations
 export async function up(db: Kysely<unknown>): Promise<void> {
   await db.schema
@@ -18,7 +20,10 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .execute();
 }
 
-// `any`(or unknown) is required here since migrations should be frozen in time. alternatively, keep a "snapshot" db interface.
+// `any`(or unknown) is required here since migrations should be frozen in time
+// Migrations should never depend on the current code of your app
+// because they need to work even when the app changes
+// For more info, see: https://kysely.dev/docs/migrations
 export async function down(db: Kysely<unknown>): Promise<void> {
   await db.schema.dropTable("users").execute();
 }

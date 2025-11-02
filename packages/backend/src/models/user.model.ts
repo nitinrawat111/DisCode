@@ -7,15 +7,7 @@ import {
 } from "kysely";
 
 ////////////////////////////////////////////
-// Kysely Tables
-// Table names are pluralized
-////////////////////////////////////////////
-export interface Database {
-  users: UserTable;
-}
-
-////////////////////////////////////////////
-// User Table
+// User Roles
 ////////////////////////////////////////////
 export const UserRole = {
   SuperAdmin: "superadmin",
@@ -25,17 +17,21 @@ export const UserRole = {
 } as const;
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
+////////////////////////////////////////////
+// User Table Definition
 // Postgres will convert all column names to lowercase
 // Hence using snake case for database columns
-// TODO: Use camelCase plugin for kysely
 // Reference: https://kysely.dev/docs/getting-started
+////////////////////////////////////////////
 export interface UserTable {
   user_id: Generated<number>;
   username: string;
   email: string;
   password_hash: string;
   role: UserRole;
-  // null reference: https://github.com/kysely-org/kysely/issues/27#issuecomment-986076120
+  // Use null to define optional fields
+  // If a field's value is null in the DB, then null will be returned here (not undefined)
+  // Reference: https://github.com/kysely-org/kysely/issues/27#issuecomment-986076120
   bio: string | null;
   avatar_url: string | null;
   created_at: ColumnType<Date, never, never>;

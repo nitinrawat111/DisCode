@@ -1,6 +1,7 @@
 import { JWTPayload } from "jose";
-import { User, UserRole } from "./db";
+import { User, UserRole } from "../models/user.model";
 
+// TODO: Add reference and context
 export interface JWKSPrivateKey {
   key: CryptoKey;
   kid: string;

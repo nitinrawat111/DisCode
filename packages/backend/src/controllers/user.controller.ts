@@ -8,7 +8,7 @@ import {
   RegisterRequest,
   UpdateProfileRequest,
 } from "../dtos/user.dto";
-import { UserProfile, UserRole } from "../types/db";
+import { UserProfile, UserRole } from "../models/user.model";
 import { UserJWTPayload } from "../types";
 import { UserIdParam } from "../routes/api/v1/user.router";
 

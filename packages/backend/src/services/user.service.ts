@@ -7,7 +7,7 @@ import {
   UpdateProfileRequest,
 } from "../dtos/user.dto";
 import { compare, hash } from "bcrypt";
-import { User, UserRole } from "../types/db";
+import { User, UserRole } from "../models/user.model";
 import { isDuplicateKeyError } from "../utils/postgres";
 import { ApiError } from "../utils/ApiError";
 import { UserJWTPayload } from "../types";

@@ -9,7 +9,7 @@ import {
 } from "../../../dtos/user.dto";
 import { ApiResponse } from "../../../utils/ApiResponse";
 import { parseUserHeaders } from "../../../middlewares/parseUserHeaders.middleware";
-import { UserProfile } from "../../../types/db";
+import { UserProfile } from "../../../models/user.model";
 import { UserJWTPayload } from "../../../types";
 
 export const UserRouter = Router();
