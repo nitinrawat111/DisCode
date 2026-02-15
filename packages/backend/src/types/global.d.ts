@@ -1,4 +1,4 @@
-declare namespace Node {
+declare namespace NodeJS {
   interface ProcessEnv {
     // TODO: validate using zod
     PORT: string;
