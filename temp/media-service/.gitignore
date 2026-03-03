@@ -1,0 +1,9 @@
+dist/
+logs/
+node_modules/
+.turbo
+
+.env
+.env.dev
+.env.production
+.env.test
