@@ -13,10 +13,13 @@ import { ACCESS_TOKEN_EXPIRATION_TIME } from "../constants";
 
 export class JWKSService {
   private static readonly algorithm = "RS256";
-  private initPromise: Promise<void>;
+  private initPromise: Promise<void> | null = null;
   private privateKeys: JWKSPrivateKey[] = [];
   private jwks: JSONWebKeySet = { keys: [] };
-  private getPublicKey: ReturnType<typeof createLocalJWKSet>;
+  // Initially set to a dummy function; will be replaced after initialization
+  // This is to satisfy the compiler that the property will be initialized
+  private getPublicKey: ReturnType<typeof createLocalJWKSet> =
+    createLocalJWKSet(this.jwks);
 
   constructor() {
     this.setupKeyRotationJobs();
@@ -65,7 +68,7 @@ export class JWKSService {
   }
 
   public waitForInit(): Promise<void> {
-    return this.initPromise;
+    return this.initPromise ?? Promise.resolve();
   }
 
   public getJwks(): JSONWebKeySet {
