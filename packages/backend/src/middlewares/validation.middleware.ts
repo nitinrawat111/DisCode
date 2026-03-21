@@ -7,7 +7,7 @@ export function getBodyValidationMiddleware<
   ReqParamsType,
   ResBodyType,
   ReqQueryType,
-  ResLocalsType,
+  ResLocalsType extends Record<string, unknown>,
   SchemaType extends ZodObject,
 >(schema: SchemaType) {
   const validationMiddeware: RequestHandler<
@@ -28,7 +28,7 @@ export function getQueryValidationMiddleware<
   ReqParamsType,
   ResBodyType,
   ReqBodyType,
-  ResLocalsType,
+  ResLocalsType extends Record<string, unknown>,
   SchemaType extends ZodObject,
 >(schema: SchemaType) {
   const validationMiddeware: RequestHandler<
