@@ -34,7 +34,7 @@ export interface ProblemTable {
    * - So instead of managing them separately, we can store the image as base-64 in the markdown itself
    * - Storing such large markdown in DB will be inefficient
    */
-  markdown_key: string; 
+  markdown_key: string;
   test_keys: string[]; // Array of S3 keys for test cases
   difficulty: ProblemDifficulty;
   tags: string[]; // Array of problem tags

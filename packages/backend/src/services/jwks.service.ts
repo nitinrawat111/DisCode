@@ -16,10 +16,7 @@ export class JWKSService {
   private initPromise: Promise<void> | null = null;
   private privateKeys: JWKSPrivateKey[] = [];
   private jwks: JSONWebKeySet = { keys: [] };
-  // Initially set to a dummy function; will be replaced after initialization
-  // This is to satisfy the compiler that the property will be initialized
-  private getPublicKey: ReturnType<typeof createLocalJWKSet> =
-    createLocalJWKSet(this.jwks);
+  private getPublicKey: ReturnType<typeof createLocalJWKSet> | null = null;
 
   constructor() {
     this.setupKeyRotationJobs();
@@ -92,14 +89,17 @@ export class JWKSService {
   }
 
   public async verifyJWT(jwt: string) {
+    if (this.getPublicKey === null) {
+      throw new Error("JWKS Service not initialized");
+    }
+
     try {
       const { payload } = await jwtVerify<UserJWTPayload>(
         jwt,
         this.getPublicKey,
       );
       return payload;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch {
       throw new Error("Jwt Verification Failed");
     }
   }

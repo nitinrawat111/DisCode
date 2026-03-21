@@ -12,7 +12,7 @@ import { parseUserHeaders } from "../../../middlewares/parseUserHeaders.middlewa
 import { UserProfile } from "../../../models/user.model";
 import { UserJWTPayload } from "../../../types";
 
-export const UserRouter = Router();
+export const UserRouter: Router = Router();
 export type UserIdParam = {
   userId: string;
 };

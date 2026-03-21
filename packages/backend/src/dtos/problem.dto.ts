@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 import { ProblemDifficulty } from "../models/problem.model";
 import { UserIdDto } from "./user.dto";
 

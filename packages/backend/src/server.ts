@@ -5,14 +5,15 @@ import { ApiResponse } from "./utils/ApiResponse";
 import { V1Router } from "./routes/api/v1/v1.router";
 import { morganMiddleware } from "./middlewares/morgan.middleware";
 import express, { NextFunction, Request, Response } from "express";
-import { z, ZodError } from "zod/v4";
+import { z, ZodError } from "zod";
 import { JwksServiceInstance } from "./services/jwks.service";
+import type { Express } from "express";
 
 ////////////////////////////////////////////////////////////
 // Express App Initialization
 // Exporting for testing
 ////////////////////////////////////////////////////////////
-export const app = express();
+export const app: Express = express();
 
 ////////////////////////////////////////////////////////////
 // Middlewares
