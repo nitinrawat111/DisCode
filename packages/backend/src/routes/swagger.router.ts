@@ -4,7 +4,7 @@ import { resolve } from "path";
 import swaggerJSDoc from "swagger-jsdoc"; // This provides default imports only
 import { SERVICE_NAME } from "../constants";
 
-export const SwaggerRouter = Router();
+export const SwaggerRouter: Router = Router();
 
 const swaggerSpecification = swaggerJSDoc({
   // Whether or not to throw when parsing errors

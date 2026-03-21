@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { z, ZodObject } from "zod/v4";
+import { z, ZodObject } from "zod";
 
 export type ValidationTarget = "body" | "query";
 
