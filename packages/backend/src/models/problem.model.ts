@@ -5,7 +5,7 @@ import {
   Insertable,
   Updateable,
 } from "kysely";
-import { UserTable } from "./user.model";
+import { User, UserTable } from "./user.model";
 
 ////////////////////////////////////////////
 // Problem Difficulty
@@ -46,3 +46,10 @@ export interface ProblemTable {
 export type Problem = Selectable<ProblemTable>;
 export type NewProblem = Insertable<ProblemTable>;
 export type ProblemUpdate = Updateable<ProblemTable>;
+
+////////////////////////////////////////////
+// Joined Types
+////////////////////////////////////////////
+export interface ProblemWithCreator extends Problem {
+  creator_username: User["username"];
+}

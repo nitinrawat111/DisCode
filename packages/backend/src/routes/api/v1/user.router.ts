@@ -9,7 +9,8 @@ import {
 } from "../../../dtos/user.dto";
 import { ApiResponse } from "../../../utils/ApiResponse";
 import { parseUserHeaders } from "../../../middlewares/parseUserHeaders.middleware";
-import { UserProfile } from "../../../models/user.model";
+import { requireRoles } from "../../../middlewares/authorization.middleware";
+import { UserProfile, UserRole } from "../../../models/user.model";
 import { UserJWTPayload } from "../../../types";
 
 export const UserRouter: Router = Router();
@@ -585,5 +586,6 @@ UserRouter.get("/role/:userId", UserControllerInstance.getUserRole);
 UserRouter.put(
   "/role/:userId",
   parseUserHeaders,
+  requireRoles([UserRole.Admin, UserRole.SuperAdmin]),
   UserControllerInstance.changeRole,
 );

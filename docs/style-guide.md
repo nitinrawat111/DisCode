@@ -60,17 +60,37 @@ type User = {
 
 ### 3. Use Explicit Type Checks (`typeof`)
 
-Avoid truthy/falsy shorthand. Be precise in type checks.
+Avoid truthy/falsy shorthand. Be precise in type checks. 
+ - Use `typeof` **only** for checking primitive types.
+ - For checking if a value is `undefined` or `null`, use **direct equality checks** instead of `typeof`:
 
 ```ts
-// ✅ Correct
+// ✅ Correct: Direct comparison for undefined/null
+if (value === undefined) {
+  // ...
+}
+
+if (value === null) {
+  // ...
+}
+
+// ✅ Correct: typeof for primitives
 if (typeof value === "string") {
   // ...
 }
 
-// ❌ Bad
+if (typeof count === "number") {
+  // ...
+}
+
+// ❌ Incorrect: typeof for undefined/null is unnecessary
+if (typeof value === "undefined") {
+  // Harder to read and less idiomatic
+}
+
+// ❌ Bad: Truthy/falsy checks
 if (value) {
-  // Might be undefined, 0, '', null, etc.
+  // Might be undefined, 0, '', null, false, etc.
 }
 ```
 

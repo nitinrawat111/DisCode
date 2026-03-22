@@ -1,5 +1,5 @@
 import { JWTPayload } from "jose";
-import { User, UserRole } from "../models/user.model";
+import { User } from "../models/user.model";
 
 // TODO: Add reference and context
 export interface JWKSPrivateKey {
@@ -9,5 +9,4 @@ export interface JWKSPrivateKey {
 
 export interface UserJWTPayload extends JWTPayload {
   userId: User["user_id"];
-  role: UserRole;
 }

@@ -1,9 +1,9 @@
-import { ApiError } from "../utils/ApiError";
-import { UserIdDto, UserRoleDto } from "../dtos/user.dto";
 import { NextFunction, Request, Response } from "express";
+import { ApiError } from "../utils/ApiError";
+import { JwksServiceInstance } from "../services/jwks.service";
 import { UserJWTPayload } from "../types";
 
-export function parseUserHeaders<
+export async function parseUserHeaders<
   ReqParamsType,
   ResBodyType,
   ReqBodyType,
@@ -19,37 +19,26 @@ export function parseUserHeaders<
   res: Response<ResBodyType, UserJWTPayload>,
   next: NextFunction,
 ) {
-  // Extract headers
-  const userId = req.headers["x-user-id"];
-  const userRole = req.headers["x-user-role"];
+  // Extract Authorization header
+  const authHeader = req.headers.authorization;
 
-  // Validate presence of headers
-  // Headers will always be string (no matter the actual data they represent)
-  // Reference: https://stackoverflow.com/questions/34152142/possible-types-of-a-http-header-value
-  if (typeof userId !== "string") {
-    throw new ApiError(401, "Missing x-user-id header");
+  if (
+    typeof authHeader !== "string" ||
+    authHeader.startsWith("Bearer ") === false
+  ) {
+    throw new ApiError(401, "Missing or invalid Authorization header");
   }
 
-  if (typeof userRole !== "string") {
-    throw new ApiError(401, "Missing x-user-role header");
-  }
+  // Extract JWT from "Bearer <token>"
+  const token = authHeader.substring(7);
 
-  // Validate userId
-  const userIdResult = UserIdDto.safeParse(parseInt(userId));
-  if (userIdResult.success === false) {
-    throw new ApiError(400, "Invalid x-user-id header");
-  }
+  // Verify JWT and extract userId
+  const payload = await JwksServiceInstance.verifyJWT(token);
 
-  // Validate role using userRoleDto
-  const roleResult = UserRoleDto.safeParse(userRole);
-  if (roleResult.success === false) {
-    throw new ApiError(400, "Invalid x-user-role header");
-  }
-
-  // Attach the parsed and validated user data to res.locals
+  // Attach userId to res.locals (role will be fetched by requireRoles middleware)
   res.locals = {
-    userId: userIdResult.data,
-    role: roleResult.data,
+    userId: payload.userId,
   };
+
   next();
 }

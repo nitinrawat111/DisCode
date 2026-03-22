@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ProblemDifficulty } from "../models/problem.model";
+import { ProblemDifficulty, ProblemWithCreator } from "../models/problem.model";
 import { UserIdDto } from "./user.dto";
 
 ////////////////////////////////////////////
@@ -48,3 +48,13 @@ export const GetProblemsQueryDto = z.object({
   created_by: UserIdDto.nullish(),
 });
 export type GetProblemsQuery = z.infer<typeof GetProblemsQueryDto>;
+
+////////////////////////////////////////////
+// Get Problems Response Dto
+////////////////////////////////////////////
+export interface GetProblemsResponse {
+  problems: ProblemWithCreator[];
+  totalProblems: number;
+  totalPages: number;
+  currentPage: number;
+}

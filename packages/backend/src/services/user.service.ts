@@ -56,7 +56,7 @@ export class UserService {
       .selectAll()
       .where("email", "=", loginRequest.email)
       .executeTakeFirst();
-    if (typeof user === "undefined") {
+    if (user === undefined) {
       throw new ApiError(404, "Email not found");
     }
 
@@ -90,7 +90,7 @@ export class UserService {
       .where("user_id", "=", userId)
       .executeTakeFirst();
 
-    if (typeof user === "undefined") {
+    if (user === undefined) {
       throw new ApiError(404, "User not found");
     }
 
@@ -128,7 +128,7 @@ export class UserService {
       .where("user_id", "=", userId)
       .executeTakeFirst();
 
-    if (typeof user === "undefined") {
+    if (user === undefined) {
       throw new ApiError(404, "UserId not found");
     }
 
