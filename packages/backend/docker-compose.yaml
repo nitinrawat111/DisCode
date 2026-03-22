@@ -1,8 +1,8 @@
-name: user-service
+name: discode
 services:
   database:
     image: postgres:17
-    container_name: user-service-database
+    container_name: database
     restart: unless-stopped
     ports:
       - "5432:5432"
