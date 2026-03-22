@@ -70,7 +70,6 @@ export class UserService {
 
     const jwtPayload: UserJWTPayload = {
       userId: user.user_id,
-      role: user.role,
     };
     return jwtPayload;
   }

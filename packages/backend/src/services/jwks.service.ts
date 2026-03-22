@@ -9,7 +9,8 @@ import {
 import { JWKSPrivateKey, UserJWTPayload } from "../types";
 import { schedule } from "node-cron";
 import { v4 as uuidv4 } from "uuid";
-import { ACCESS_TOKEN_EXPIRATION_TIME } from "../constants";
+import { ACCESS_TOKEN_EXPIRATION_TIME_MS } from "../constants";
+import { ApiError } from "../utils/ApiError";
 
 export class JWKSService {
   private static readonly algorithm = "RS256";
@@ -84,13 +85,14 @@ export class JWKSService {
         alg: JWKSService.algorithm,
         kid: latestPrivateKey.kid,
       })
-      .setExpirationTime(Date.now() + ACCESS_TOKEN_EXPIRATION_TIME)
+      .setIssuedAt() // this will use the current unix timestamp as the "iat" claim
+      .setExpirationTime(new Date(Date.now() + ACCESS_TOKEN_EXPIRATION_TIME_MS))
       .sign(latestPrivateKey.key);
   }
 
   public async verifyJWT(jwt: string) {
     if (this.getPublicKey === null) {
-      throw new Error("JWKS Service not initialized");
+      throw new ApiError(500, "JWKS Service not initialized");
     }
 
     try {
@@ -100,7 +102,7 @@ export class JWKSService {
       );
       return payload;
     } catch {
-      throw new Error("Jwt Verification Failed");
+      throw new ApiError(401, "Invalid or expired token");
     }
   }
 }

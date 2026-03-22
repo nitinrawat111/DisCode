@@ -27,7 +27,7 @@ class UserController {
   ) => {
     const payload = await UserServiceInstance.login(req.body);
     const accessToken = await JwksServiceInstance.signJWT(payload);
-    res.setHeader("Authorization", accessToken);
+    res.setHeader("Authorization", `Bearer ${accessToken}`);
     res.status(200).json(new ApiResponse(200, "Logged in successfully"));
   };
 

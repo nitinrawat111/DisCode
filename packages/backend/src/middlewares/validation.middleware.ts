@@ -38,7 +38,7 @@ export function getQueryValidationMiddleware<
     z.infer<typeof schema>,
     ResLocalsType
   > = (req, _res, next) => {
-    req.query = schema.parse(req.body);
+    req.query = schema.parse(req.query);
     next();
   };
 

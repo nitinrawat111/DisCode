@@ -3,6 +3,7 @@ import { Logger } from "./utils/logger";
 import { ApiError } from "./utils/ApiError";
 import { ApiResponse } from "./utils/ApiResponse";
 import { V1Router } from "./routes/api/v1/v1.router";
+import { SwaggerRouter } from "./routes/swagger.router";
 import { morganMiddleware } from "./middlewares/morgan.middleware";
 import express, { NextFunction, Request, Response } from "express";
 import { z, ZodError } from "zod";
@@ -31,6 +32,7 @@ app.use(
 // Routes
 ////////////////////////////////////////////////////////////
 app.use("/api/v1", V1Router);
+app.use("/docs", SwaggerRouter);
 
 ////////////////////////////////////////////////////////////
 // Error Handler

@@ -16,7 +16,7 @@ const swaggerSpecification = swaggerJSDoc({
     servers: [
       {
         url: `/`, // Base URL for this version of the API
-        description: `${SERVICE_NAME} API`,
+        description: SERVICE_NAME,
       },
     ],
     info: {
