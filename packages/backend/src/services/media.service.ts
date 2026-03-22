@@ -28,7 +28,7 @@ export class MediaService {
 
   /**
    * Uploads a file to Azure Blob Storage
-   * Throws ApiError if the blob already exists (to prevent overwriting) or if upload fails
+   * Throws if the blob already exists (to prevent overwriting)
    */
   async uploadFile(
     containerName: AzureBlobContainer,
