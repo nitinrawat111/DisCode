@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node",
-    include: ["tests/**/*.{test,spec}.ts", "src/**/*.{test,spec}.ts"],
+    include: ["tests/**/*.{ts,tsx}", "src/**/*.{test,spec}.{ts,tsx}"],
     passWithNoTests: true,
     coverage: {
       provider: "v8",
