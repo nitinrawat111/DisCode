@@ -46,7 +46,7 @@ export class MediaService {
         // If-None-Match condition to prevent overwriting existing blobs
         // Reference: https://learn.microsoft.com/en-us/rest/api/storageservices/specifying-conditional-headers-for-blob-service-operations#Subheading1
         ifNoneMatch: "*",
-      }
+      },
     });
   }
 
