@@ -7,6 +7,9 @@
     "start": "npm run build && dotenvx run -f .env -- node dist/src/server.js",
     "lint": "eslint . --fix",
     "pretty": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "db:start": "docker compose up -d database",
     "db:migrate:make": "kysely migrate:make ",
     "db:migrate:up": "dotenvx run -f .env -- kysely migrate:up",
@@ -27,6 +30,7 @@
     "@types/pg": "^8.20.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.2",
     "eslint": "^10.1.0",
     "globals": "^17.4.0",
     "kysely-ctl": "^0.20.0",
@@ -34,7 +38,8 @@
     "prettier": "3.8.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.1"
+    "typescript-eslint": "^8.57.1",
+    "vitest": "^4.1.2"
   },
   "dependencies": {
     "@azure/storage-blob": "^12.20.0",
