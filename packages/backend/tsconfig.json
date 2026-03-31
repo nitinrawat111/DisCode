@@ -20,7 +20,9 @@
     "noImplicitAny": true,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "lib": ["ES2022.Array"]
+    "lib": ["ES2022.Array"],
+    // Reference: https://vitest.dev/config/globals
+    "types": ["vitest/globals"]
   },
-  "exclude": ["dist/**/*", "logs/**/*", "node_modules/**/*", "tests/**/*"]
+  "exclude": ["dist/**/*", "logs/**/*", "node_modules/**/*"]
 }
