@@ -26,8 +26,9 @@ const swaggerSpecification = swaggerJSDoc({
   },
 
   // Path to the API docs
-  // Use absolute path prevent ambiguity
-  apis: [resolve(__dirname, "./api/**/*.ts")],
+  // Use absolute path to prevent ambiguity
+  // Use .js to pick up compiled files
+  apis: [resolve(__dirname, "./api/**/*.js")],
 });
 
 /**
