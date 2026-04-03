@@ -37,6 +37,7 @@
     "typescript-eslint": "^8.57.1"
   },
   "dependencies": {
+    "@azure/service-bus": "^7.9.5",
     "@azure/storage-blob": "^12.20.0",
     "@dotenvx/dotenvx": "^1.57.0",
     "bcrypt": "^6.0.0",

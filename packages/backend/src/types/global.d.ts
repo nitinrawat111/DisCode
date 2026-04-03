@@ -11,5 +11,7 @@ declare namespace NodeJS {
     POSTGRES_PASSWORD: string;
     AZURE_ACCOUNT_NAME: string;
     AZURE_ACCOUNT_KEY: string;
+    AZURE_SERVICE_BUS_CONNECTION_STRING: string;
+    AZURE_SERVICE_BUS_QUEUE_NAME: string;
   }
 }

@@ -8,6 +8,7 @@ import { morganMiddleware } from "./middlewares/morgan.middleware";
 import express, { NextFunction, Request, Response } from "express";
 import { z, ZodError } from "zod";
 import { JwksServiceInstance } from "./services/jwks.service";
+import { CodeExecutionQueueServiceInstance } from "./services/code-execution-queue.service";
 import type { Express } from "express";
 
 ////////////////////////////////////////////////////////////
@@ -73,6 +74,7 @@ app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
 const PORT = parseInt(process.env.PORT);
 async function init() {
   await JwksServiceInstance.waitForInit();
+  await CodeExecutionQueueServiceInstance.waitForInit();
   app.listen(PORT, () => {
     Logger.info(`Server started on PORT: ${PORT}`);
   });
