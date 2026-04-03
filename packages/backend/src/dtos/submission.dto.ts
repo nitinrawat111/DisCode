@@ -19,7 +19,9 @@ export const CreateSubmissionRequestDto = z.object({
   language: LanguageDto,
   submission_key: SubmissionKeyDto,
 });
-export type CreateSubmissionRequest = z.infer<typeof CreateSubmissionRequestDto>;
+export type CreateSubmissionRequest = z.infer<
+  typeof CreateSubmissionRequestDto
+>;
 
 ////////////////////////////////////////////
 // Update Submission Request Dto
@@ -35,7 +37,9 @@ export const UpdateSubmissionRequestDto = z.object({
   error_message: z.string().nullish(),
   executed_at: z.string().datetime().nullish(),
 });
-export type UpdateSubmissionRequest = z.infer<typeof UpdateSubmissionRequestDto>;
+export type UpdateSubmissionRequest = z.infer<
+  typeof UpdateSubmissionRequestDto
+>;
 
 ////////////////////////////////////////////
 // Get Submissions Query Dto

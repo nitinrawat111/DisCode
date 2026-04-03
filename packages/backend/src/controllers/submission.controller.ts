@@ -27,7 +27,9 @@ class SubmissionController {
     );
     res
       .status(201)
-      .json(new ApiResponse(201, "Submission created successfully", submission));
+      .json(
+        new ApiResponse(201, "Submission created successfully", submission),
+      );
   };
 
   getSubmissionById: RequestHandler<
@@ -58,9 +60,7 @@ class SubmissionController {
     const result = await SubmissionServiceInstance.getSubmissions(req.query);
     res
       .status(200)
-      .json(
-        new ApiResponse(200, "Submissions fetched successfully", result),
-      );
+      .json(new ApiResponse(200, "Submissions fetched successfully", result));
   };
 
   updateSubmission: RequestHandler<

@@ -172,7 +172,10 @@ SubmissionRouter.get(
  *       404:
  *         description: "Submission not found"
  */
-SubmissionRouter.get("/:submissionId", SubmissionControllerInstance.getSubmissionById);
+SubmissionRouter.get(
+  "/:submissionId",
+  SubmissionControllerInstance.getSubmissionById,
+);
 
 /**
  * @swagger

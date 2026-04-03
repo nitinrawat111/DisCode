@@ -42,7 +42,11 @@ export interface SubmissionTable {
    */
   problem_id: string;
   language: Language;
-  status: ColumnType<SubmissionStatus, SubmissionStatus | undefined, SubmissionStatus>;
+  status: ColumnType<
+    SubmissionStatus,
+    SubmissionStatus | undefined,
+    SubmissionStatus
+  >;
   runtime: number | null;
   memory_used: number | null;
   test_cases_passed: number | null;
@@ -53,7 +57,11 @@ export interface SubmissionTable {
    */
   submission_key: string;
   created_at: ColumnType<Date, never, never>;
-  executed_at: ColumnType<Date | null, string | null | undefined, string | null | undefined>;
+  executed_at: ColumnType<
+    Date | null,
+    string | null | undefined,
+    string | null | undefined
+  >;
 }
 
 export type Submission = Selectable<SubmissionTable>;
