@@ -107,8 +107,8 @@ export class ProblemService {
     const offset = (query.page - 1) * query.limit;
     const problemsQuery = baseQuery
       .orderBy("problems.created_at", "desc")
-      .limit(query.limit)
       .offset(offset)
+      .limit(query.limit)
       .execute();
 
     const [countResult, problems] = await Promise.all([

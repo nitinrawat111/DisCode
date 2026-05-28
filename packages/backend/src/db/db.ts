@@ -3,6 +3,7 @@ import { Kysely, PostgresDialect } from "kysely";
 import { Logger } from "../utils/logger";
 import { UserTable } from "../models/user.model";
 import { ProblemTable } from "../models/problem.model";
+import { SubmissionTable } from "../models/submission.model";
 
 // Create the Postgres dialect for Kysely
 // Reference: https://kysely.dev/docs/getting-started#instantiation
@@ -23,6 +24,7 @@ const dialect = new PostgresDialect({
 export interface Database {
   users: UserTable;
   problems: ProblemTable;
+  submissions: SubmissionTable;
 }
 
 // Instantiate Database
