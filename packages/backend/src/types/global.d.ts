@@ -9,6 +9,7 @@ declare namespace NodeJS {
     POSTGRES_DB_NAME: string;
     POSTGRES_USERNAME: string;
     POSTGRES_PASSWORD: string;
+    AZURE_STORAGE_ENDPOINT: string;
     AZURE_ACCOUNT_NAME: string;
     AZURE_ACCOUNT_KEY: string;
     AZURE_SERVICE_BUS_CONNECTION_STRING: string;

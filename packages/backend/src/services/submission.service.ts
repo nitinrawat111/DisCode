@@ -77,30 +77,31 @@ export class SubmissionService {
   async getSubmissions(
     query: GetSubmissionsFilterQuery,
   ): Promise<GetSubmissionsResponse> {
-    let baseQuery = DB.selectFrom("submissions").selectAll();
+    let filteredQuery = DB.selectFrom("submissions");
 
     if (typeof query.problemId === "string") {
-      baseQuery = baseQuery.where("problem_id", "=", query.problemId);
+      filteredQuery = filteredQuery.where("problem_id", "=", query.problemId);
     }
 
     if (typeof query.userId === "number") {
-      baseQuery = baseQuery.where("user_id", "=", query.userId);
+      filteredQuery = filteredQuery.where("user_id", "=", query.userId);
     }
 
     if (typeof query.status === "string") {
-      baseQuery = baseQuery.where("status", "=", query.status);
+      filteredQuery = filteredQuery.where("status", "=", query.status);
     }
 
     if (typeof query.language === "string") {
-      baseQuery = baseQuery.where("language", "=", query.language);
+      filteredQuery = filteredQuery.where("language", "=", query.language);
     }
 
-    const countQuery = baseQuery
+    const countQuery = filteredQuery
       .select(sql<number>`COUNT(*)::int`.as("total"))
       .executeTakeFirstOrThrow();
 
     const offset = (query.page - 1) * query.limit;
-    const submissionsQuery = baseQuery
+    const submissionsQuery = filteredQuery
+      .selectAll()
       .orderBy("created_at", "desc")
       .limit(query.limit)
       .offset(offset)

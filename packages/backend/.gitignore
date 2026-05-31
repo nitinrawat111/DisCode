@@ -8,3 +8,6 @@ coverage/
 .env.dev
 .env.production
 .env.test
+
+# Docker volumes directory
+docker-volumes/

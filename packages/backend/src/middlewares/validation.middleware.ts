@@ -38,7 +38,8 @@ export function getQueryValidationMiddleware<
     z.infer<typeof schema>,
     ResLocalsType
   > = (req, _res, next) => {
-    req.query = schema.parse(req.query);
+    // req.query is read-only; use Object.assign to mutate it in place
+    Object.assign(req.query, schema.parse(req.query));
     next();
   };
 

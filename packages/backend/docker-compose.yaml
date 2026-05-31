@@ -10,3 +10,49 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: discode
+
+  # Azurite container for emulating Azure Storage services
+  # Reference: https://learn.microsoft.com/en-us/azure/storage/common/storage-install-azurite
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: azurite
+    restart: unless-stopped
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    command: azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --location /data --disableTelemetry
+    volumes:
+      - ./docker-volumes/azurite:/data
+
+  # Needed for Azure Service Bus Emulator, which relies on SQL Server.
+  # Reference:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: servicebus-mssql
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-DisCode123!}"
+    ports:
+      - "1433:1433"
+
+  # Service Bus Emulator for local development
+  # Reference: https://learn.microsoft.com/en-us/azure/service-bus-messaging/test-locally-with-service-bus-emulato
+  servicebus-emulator:
+    image: mcr.microsoft.com/azure-messaging/servicebus-emulator:latest
+    container_name: servicebus-emulator
+    restart: unless-stopped
+    depends_on:
+      - mssql
+    environment:
+      SQL_SERVER: mssql
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-DisCode123!}"
+      ACCEPT_EULA: "Y"
+      EMULATOR_HTTP_PORT: 5300
+      SQL_WAIT_INTERVAL: 15
+    ports:
+      - "5672:5672"
+      - "5300:5300"
+    volumes:
+      - ./service-bus-config.json:/ServiceBus_Emulator/ConfigFiles/Config.json:ro

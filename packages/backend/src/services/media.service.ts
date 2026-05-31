@@ -21,7 +21,7 @@ export class MediaService {
 
     // Reference: https://www.npmjs.com/package/@azure/storage-blob
     this.blobServiceClient = new BlobServiceClient(
-      `https://${process.env.AZURE_ACCOUNT_NAME}.blob.core.windows.net`,
+      process.env.AZURE_STORAGE_ENDPOINT,
       sharedCredential,
     );
   }

@@ -62,20 +62,8 @@ export class ProblemService {
   }
 
   async getProblems(query: GetProblemsQuery): Promise<GetProblemsResponse> {
-    let baseQuery = DB.selectFrom("problems")
-      .innerJoin("users", "problems.created_by", "users.user_id")
-      .select([
-        "problems.problem_id",
-        "problems.title",
-        "problems.markdown_key",
-        "problems.test_keys",
-        "problems.difficulty",
-        "problems.tags",
-        "problems.created_by",
-        "problems.created_at",
-        "problems.updated_at",
-        "users.username as creator_username",
-      ]);
+    // Build a base query with all filters applied (no select/joins yet)
+    let baseQuery = DB.selectFrom("problems");
 
     // Apply filters
     if (typeof query.difficulty === "string") {
@@ -98,14 +86,27 @@ export class ProblemService {
       baseQuery = baseQuery.where("problems.created_by", "=", query.created_by);
     }
 
-    // Get total count for pagination
+    // Fork for count (no joins)
     const countQuery = baseQuery
       .select(sql<number>`COUNT(*)::int`.as("total"))
       .executeTakeFirstOrThrow();
 
-    // Apply pagination and ordering
+    // Fork for data (add joins, select, pagination)
     const offset = (query.page - 1) * query.limit;
     const problemsQuery = baseQuery
+      .innerJoin("users", "problems.created_by", "users.user_id")
+      .select([
+        "problems.problem_id",
+        "problems.title",
+        "problems.markdown_key",
+        "problems.test_keys",
+        "problems.difficulty",
+        "problems.tags",
+        "problems.created_by",
+        "problems.created_at",
+        "problems.updated_at",
+        "users.username as creator_username",
+      ])
       .orderBy("problems.created_at", "desc")
       .offset(offset)
       .limit(query.limit)
