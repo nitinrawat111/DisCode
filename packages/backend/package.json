@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "npm run build && dotenvx run -f .env -- node dist/src/server.js",
+    "compile": "tsc",
+    "start": "npm run compile && dotenvx run -f .env -- node dist/src/server.js",
     "lint": "eslint . --fix",
     "pretty": "prettier --write .",
     "test": "vitest run",
