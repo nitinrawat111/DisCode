@@ -1,3 +1,6 @@
+// `setup.ts` should be the first file imported in server.ts, before any other file.
+// This is to ensure that the setup/config is done before any other module is executed.
+import "./setup";
 import cors from "cors";
 import { Logger } from "./utils/logger";
 import { ApiError } from "./utils/ApiError";

@@ -1,0 +1,1974 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "discode-api",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "discode-api"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT access token returned in the Authorization header"
+      }
+    },
+    "schemas": {
+      "ApiErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "Error message"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "message"
+        ]
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 30,
+            "description": "User's username (max 30 characters)",
+            "example": "johndoe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "User's password (min 8 characters)",
+            "example": "password123"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true,
+            "description": "User bio",
+            "example": "Software Engineer"
+          },
+          "avatar_url": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL of the user's avatar",
+            "example": "https://example.com/avatar.png"
+          }
+        },
+        "required": [
+          "username",
+          "email",
+          "password"
+        ]
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "User's password (min 8 characters)",
+            "example": "password123"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "ChangeRoleRequest": {
+        "type": "object",
+        "properties": {
+          "new_role": {
+            "type": "string",
+            "enum": [
+              "superadmin",
+              "admin",
+              "moderator",
+              "normal"
+            ],
+            "description": "User role",
+            "example": "normal"
+          }
+        },
+        "required": [
+          "new_role"
+        ]
+      },
+      "UpdateProfileRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 30,
+            "description": "User's username (max 30 characters)",
+            "example": "johndoe"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true,
+            "description": "User bio",
+            "example": "Software Engineer"
+          },
+          "avatar_url": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL of the user's avatar",
+            "example": "https://example.com/avatar.png"
+          }
+        }
+      },
+      "UserProfile": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "User ID",
+            "example": 1
+          },
+          "username": {
+            "type": "string",
+            "maxLength": 30,
+            "description": "User's username (max 30 characters)",
+            "example": "johndoe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address",
+            "example": "user@example.com"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatar_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "superadmin",
+              "admin",
+              "moderator",
+              "normal"
+            ],
+            "description": "User role",
+            "example": "normal"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
+            ]
+          }
+        },
+        "required": [
+          "user_id",
+          "username",
+          "email",
+          "bio",
+          "avatar_url",
+          "role",
+          "created_at"
+        ]
+      },
+      "UserRoleResponse": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "superadmin",
+              "admin",
+              "moderator",
+              "normal"
+            ],
+            "description": "User role",
+            "example": "normal"
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
+      "CreateProblemRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Problem title (max 200 characters)",
+            "example": "Two Sum"
+          },
+          "markdown_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "S3 key for problem statement markdown",
+            "example": "markdown/two-sum.md"
+          },
+          "test_keys": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "description": "S3 key for file storage",
+              "example": "markdown/problem-123.md"
+            },
+            "minItems": 1,
+            "description": "Array of S3 keys for test cases",
+            "example": [
+              "tests/two-sum-1.json"
+            ]
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "easy",
+              "medium",
+              "hard"
+            ],
+            "description": "Problem difficulty level",
+            "example": "easy"
+          },
+          "tags": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Problem tags",
+            "example": [
+              "array",
+              "hash-table"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "markdown_key",
+          "test_keys",
+          "difficulty"
+        ]
+      },
+      "UpdateProblemRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Problem title (max 200 characters)",
+            "example": "Two Sum"
+          },
+          "markdown_key": {
+            "type": "string",
+            "nullable": true,
+            "minLength": 1,
+            "description": "S3 key for problem statement markdown",
+            "example": "markdown/two-sum.md"
+          },
+          "test_keys": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "description": "S3 key for file storage",
+              "example": "markdown/problem-123.md"
+            },
+            "minItems": 1,
+            "description": "Array of S3 keys for test cases",
+            "example": [
+              "tests/two-sum-1.json"
+            ]
+          },
+          "difficulty": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "easy",
+              "medium",
+              "hard",
+              null
+            ],
+            "description": "Problem difficulty level",
+            "example": "easy"
+          },
+          "tags": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Problem tags",
+            "example": [
+              "array",
+              "hash-table"
+            ]
+          }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "properties": {
+          "problem_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Problem UUID"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Problem title (max 200 characters)",
+            "example": "Two Sum"
+          },
+          "markdown_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "S3 key for problem statement markdown",
+            "example": "markdown/two-sum.md"
+          },
+          "test_keys": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "description": "S3 key for file storage",
+              "example": "markdown/problem-123.md"
+            },
+            "minItems": 1,
+            "description": "Array of S3 keys for test cases",
+            "example": [
+              "tests/two-sum-1.json"
+            ]
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "easy",
+              "medium",
+              "hard"
+            ],
+            "description": "Problem difficulty level",
+            "example": "easy"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "created_by": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "User ID",
+            "example": 1
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
+            ]
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
+            ]
+          }
+        },
+        "required": [
+          "problem_id",
+          "title",
+          "markdown_key",
+          "test_keys",
+          "difficulty",
+          "tags",
+          "created_by",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "ProblemWithCreator": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Problem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "creator_username": {
+                "type": "string",
+                "maxLength": 30,
+                "description": "User's username (max 30 characters)",
+                "example": "johndoe"
+              }
+            },
+            "required": [
+              "creator_username"
+            ]
+          }
+        ]
+      },
+      "GetProblemsResponse": {
+        "type": "object",
+        "properties": {
+          "problems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProblemWithCreator"
+            }
+          },
+          "totalProblems": {
+            "type": "integer",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "integer",
+            "example": 10
+          },
+          "currentPage": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": [
+          "problems",
+          "totalProblems",
+          "totalPages",
+          "currentPage"
+        ]
+      },
+      "CreateSubmissionRequest": {
+        "type": "object",
+        "properties": {
+          "problem_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Target problem ID"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "cpp"
+            ],
+            "description": "Programming language",
+            "example": "cpp"
+          },
+          "submission_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Blob/object storage key of submitted code",
+            "example": "submissions/code-123.cpp"
+          }
+        },
+        "required": [
+          "problem_id",
+          "language",
+          "submission_key"
+        ]
+      },
+      "Submission": {
+        "type": "object",
+        "properties": {
+          "submission_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "user_id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "User ID",
+            "example": 1
+          },
+          "problem_id": {
+            "type": "string"
+          },
+          "submission_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Blob/object storage key of submitted code",
+            "example": "submissions/code-123.cpp"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "cpp"
+            ],
+            "description": "Programming language",
+            "example": "cpp"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "compile_error",
+              "runtime_error",
+              "time_limit_exceeded",
+              "wrong_answer",
+              "successful",
+              "server_error"
+            ],
+            "description": "Submission status",
+            "example": "queued"
+          },
+          "executed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
+            ]
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
+            ]
+          }
+        },
+        "required": [
+          "submission_id",
+          "user_id",
+          "problem_id",
+          "submission_key",
+          "language",
+          "status",
+          "executed_at",
+          "completed_at",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "GetSubmissionsResponse": {
+        "type": "object",
+        "properties": {
+          "submissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Submission"
+            }
+          },
+          "totalSubmissions": {
+            "type": "integer",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "integer",
+            "example": 1
+          },
+          "currentPage": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": [
+          "submissions",
+          "totalSubmissions",
+          "totalPages",
+          "currentPage"
+        ]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/api/v1/users/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Registration successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "description": "Registration successful response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body (validation error)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Username or email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/login": {
+      "post": {
+        "summary": "Log in a user and return an access token",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful, returns access token in Authorization header",
+            "headers": {
+              "Authorization": {
+                "schema": {
+                  "type": "string",
+                  "example": "Bearer eyJhbG...",
+                  "description": "JWT access token (must be sent as Authorization header on subsequent requests)"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "description": "Login successful response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body (validation error)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Incorrect password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Email not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/profile": {
+      "get": {
+        "summary": "Get the profile of the logged-in user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UserProfile"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid access token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update the logged-in user's profile",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "description": "Profile update response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body (validation error)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid access token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Username already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/profile/{userId}": {
+      "get": {
+        "summary": "Get a user's profile by ID",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true
+            },
+            "required": true,
+            "name": "userId",
+            "in": "path",
+            "description": "The ID of the user to fetch"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UserProfile"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid userId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/role/{userId}": {
+      "get": {
+        "summary": "Get a user's role by ID",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true
+            },
+            "required": true,
+            "name": "userId",
+            "in": "path",
+            "description": "The ID of the user whose role is to be fetched"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User role fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UserRoleResponse"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid userId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Change a user's role (requires sufficient privileges)",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true
+            },
+            "required": true,
+            "name": "userId",
+            "in": "path",
+            "description": "The ID of the user whose role is to be changed"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeRoleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "description": "Role change response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body or userId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid access token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden (insufficient privileges)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Target user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/problems": {
+      "post": {
+        "summary": "Create a new problem",
+        "tags": [
+          "Problems"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProblemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Problem created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Problem"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body (validation error)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid access token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden (insufficient permissions)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get problems with optional filtering and pagination",
+        "tags": [
+          "Problems"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1,
+              "description": "Page number for pagination",
+              "example": 1
+            },
+            "required": false,
+            "description": "Page number for pagination",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 50,
+              "default": 10,
+              "description": "Number of problems per page",
+              "example": 10
+            },
+            "required": false,
+            "description": "Number of problems per page",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "easy",
+                "medium",
+                "hard",
+                null
+              ],
+              "description": "Filter by difficulty",
+              "example": "easy"
+            },
+            "required": false,
+            "description": "Filter by difficulty",
+            "name": "difficulty",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Comma-separated list of tags to filter by",
+              "example": [
+                "array",
+                "hash-table"
+              ]
+            },
+            "required": false,
+            "description": "Comma-separated list of tags to filter by",
+            "name": "tags",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "description": "Search in problem titles",
+              "example": "sum"
+            },
+            "required": false,
+            "description": "Search in problem titles",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "description": "Filter by creator user ID",
+              "example": 1
+            },
+            "required": false,
+            "description": "Filter by creator user ID",
+            "name": "created_by",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Problems fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GetProblemsResponse"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/problems/{problemId}": {
+      "get": {
+        "summary": "Get a problem by ID",
+        "tags": [
+          "Problems"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "problemId",
+            "in": "path",
+            "description": "Problem ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Problem fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ProblemWithCreator"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Problem not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a problem",
+        "tags": [
+          "Problems"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "problemId",
+            "in": "path",
+            "description": "Problem ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProblemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Problem updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Problem"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body (validation error)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid access token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden (insufficient permissions)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Problem not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a problem",
+        "tags": [
+          "Problems"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "problemId",
+            "in": "path",
+            "description": "Problem ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Problem deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ],
+                  "description": "Problem delete response"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid access token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden (insufficient permissions)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Problem not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/submissions": {
+      "post": {
+        "summary": "Create a new code submission",
+        "tags": [
+          "Submissions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSubmissionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Submission created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Submission"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body (validation error)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid access token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Problem not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get submissions by problemId or userId",
+        "tags": [
+          "Submissions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1,
+              "example": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 50,
+              "default": 10,
+              "example": 10
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "minLength": 1,
+              "description": "Filter by problem ID (provide problemId or userId)"
+            },
+            "required": false,
+            "description": "Filter by problem ID (provide problemId or userId)",
+            "name": "problemId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "description": "Filter by user ID (provide problemId or userId)"
+            },
+            "required": false,
+            "description": "Filter by user ID (provide problemId or userId)",
+            "name": "userId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "queued",
+                "compile_error",
+                "runtime_error",
+                "time_limit_exceeded",
+                "wrong_answer",
+                "successful",
+                "server_error",
+                null
+              ],
+              "description": "Submission status",
+              "example": "queued"
+            },
+            "required": false,
+            "description": "Submission status",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "cpp",
+                null
+              ],
+              "description": "Programming language",
+              "example": "cpp"
+            },
+            "required": false,
+            "description": "Programming language",
+            "name": "language",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Submissions fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Operation successful"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GetSubmissionsResponse"
+                    },
+                    "errors": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid access token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jwks": {
+      "get": {
+        "summary": "Get JSON Web Key Set (JWKS)",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "JWKS public keys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "keys": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "keys"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

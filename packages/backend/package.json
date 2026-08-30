@@ -17,7 +17,8 @@
     "db:migrate:latest": "dotenvx run -f .env -- kysely migrate:latest",
     "db:rollback": "dotenvx run -f .env -- kysely migrate:rollback",
     "db:seed:run": "dotenvx run -f .env -- kysely seed:run",
-    "db:seed:make": "kysely seed:make"
+    "db:seed:make": "kysely seed:make",
+    "generate:openapi": "tsx ./src/scripts/generate-openapi.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -28,7 +29,6 @@
     "@types/node": "^25.5.0",
     "@types/node-cron": "^3.0.11",
     "@types/pg": "^8.20.0",
-    "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
     "@vitest/coverage-v8": "^4.1.2",
     "eslint": "^10.1.0",
@@ -37,11 +37,13 @@
     "npm": "^11.12.0",
     "prettier": "3.8.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.23.13",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.1",
     "vitest": "^4.1.2"
   },
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^9.1.0",
     "@azure/service-bus": "^7.9.5",
     "@azure/storage-blob": "^12.20.0",
     "@dotenvx/dotenvx": "^1.57.0",
@@ -53,7 +55,6 @@
     "morgan": "^1.10.1",
     "node-cron": "^4.2.1",
     "pg": "^8.20.0",
-    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^13.0.0",
     "winston": "^3.19.0",

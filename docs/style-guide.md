@@ -107,7 +107,7 @@ function fetchData() {
 }
 ```
 
-### 5. Use **PascalCase** for exported variables, types, interfaces, classes (not for functions. the shoudl be camel-cased)
+### 5. Use **PascalCase** for exported variables, types, interfaces, classes (not for functions. they should be camel-cased)
 
 ```ts
 export const AppConfig = {};
