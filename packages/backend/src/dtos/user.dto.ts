@@ -4,35 +4,25 @@ import { UserRole } from "../models/user.model";
 ////////////////////////////////////////////
 // Common Dtos
 ////////////////////////////////////////////
-export const UsernameDto = z
-  .string()
-  .max(30)
-  .openapi({
-    description: "User's username (max 30 characters)",
-    example: "johndoe",
-  });
-export const EmailDto = z
-  .email()
-  .openapi({
-    description: "User's email address",
-    example: "user@example.com",
-  });
-export const PasswordDto = z
-  .string()
-  .min(8)
-  .openapi({
-    description: "User's password (min 8 characters)",
-    example: "password123",
-  });
+export const UsernameDto = z.string().max(30).openapi({
+  description: "User's username (max 30 characters)",
+  example: "johndoe",
+});
+export const EmailDto = z.email().openapi({
+  description: "User's email address",
+  example: "user@example.com",
+});
+export const PasswordDto = z.string().min(8).openapi({
+  description: "User's password (min 8 characters)",
+  example: "password123",
+});
 export const BioDto = z
   .string()
   .openapi({ description: "User bio", example: "Software Engineer" });
-export const AvatarUrlDto = z
-  .string()
-  .openapi({
-    description: "URL of the user's avatar",
-    example: "https://example.com/avatar.png",
-  });
+export const AvatarUrlDto = z.string().openapi({
+  description: "URL of the user's avatar",
+  example: "https://example.com/avatar.png",
+});
 export const UserIdDto = z
   .number()
   .int()

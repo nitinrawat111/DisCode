@@ -8,13 +8,10 @@ import {
 ////////////////////////////////////////////
 // Common Dtos
 ////////////////////////////////////////////
-export const SubmissionIdDto = z
-  .string()
-  .min(1)
-  .openapi({
-    description: "Submission ID",
-    example: "1",
-  });
+export const SubmissionIdDto = z.string().min(1).openapi({
+  description: "Submission ID",
+  example: "1",
+});
 export const SubmissionLanguageDto = z.enum(ProgrammingLanguages).openapi({
   description: "Programming language",
   example: ProgrammingLanguages.CPP,
@@ -23,13 +20,10 @@ export const SubmissionStatusDto = z.enum(SubmissionStatus).openapi({
   description: "Submission status",
   example: SubmissionStatus.Queued,
 });
-export const SubmissionKeyDto = z
-  .string()
-  .min(1)
-  .openapi({
-    description: "Blob/object storage key of submitted code",
-    example: "submissions/code-123.cpp",
-  });
+export const SubmissionKeyDto = z.string().min(1).openapi({
+  description: "Blob/object storage key of submitted code",
+  example: "submissions/code-123.cpp",
+});
 
 ////////////////////////////////////////////
 // Create Submission Request Dto

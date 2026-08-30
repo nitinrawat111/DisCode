@@ -35,10 +35,7 @@
             "nullable": true
           }
         },
-        "required": [
-          "success",
-          "message"
-        ]
+        "required": ["success", "message"]
       },
       "RegisterRequest": {
         "type": "object",
@@ -74,11 +71,7 @@
             "example": "https://example.com/avatar.png"
           }
         },
-        "required": [
-          "username",
-          "email",
-          "password"
-        ]
+        "required": ["username", "email", "password"]
       },
       "LoginRequest": {
         "type": "object",
@@ -96,29 +89,19 @@
             "example": "password123"
           }
         },
-        "required": [
-          "email",
-          "password"
-        ]
+        "required": ["email", "password"]
       },
       "ChangeRoleRequest": {
         "type": "object",
         "properties": {
           "new_role": {
             "type": "string",
-            "enum": [
-              "superadmin",
-              "admin",
-              "moderator",
-              "normal"
-            ],
+            "enum": ["superadmin", "admin", "moderator", "normal"],
             "description": "User role",
             "example": "normal"
           }
         },
-        "required": [
-          "new_role"
-        ]
+        "required": ["new_role"]
       },
       "UpdateProfileRequest": {
         "type": "object",
@@ -176,12 +159,7 @@
           },
           "role": {
             "type": "string",
-            "enum": [
-              "superadmin",
-              "admin",
-              "moderator",
-              "normal"
-            ],
+            "enum": ["superadmin", "admin", "moderator", "normal"],
             "description": "User role",
             "example": "normal"
           },
@@ -213,19 +191,12 @@
         "properties": {
           "role": {
             "type": "string",
-            "enum": [
-              "superadmin",
-              "admin",
-              "moderator",
-              "normal"
-            ],
+            "enum": ["superadmin", "admin", "moderator", "normal"],
             "description": "User role",
             "example": "normal"
           }
         },
-        "required": [
-          "role"
-        ]
+        "required": ["role"]
       },
       "CreateProblemRequest": {
         "type": "object",
@@ -253,17 +224,11 @@
             },
             "minItems": 1,
             "description": "Array of S3 keys for test cases",
-            "example": [
-              "tests/two-sum-1.json"
-            ]
+            "example": ["tests/two-sum-1.json"]
           },
           "difficulty": {
             "type": "string",
-            "enum": [
-              "easy",
-              "medium",
-              "hard"
-            ],
+            "enum": ["easy", "medium", "hard"],
             "description": "Problem difficulty level",
             "example": "easy"
           },
@@ -275,18 +240,10 @@
               "minLength": 1
             },
             "description": "Problem tags",
-            "example": [
-              "array",
-              "hash-table"
-            ]
+            "example": ["array", "hash-table"]
           }
         },
-        "required": [
-          "title",
-          "markdown_key",
-          "test_keys",
-          "difficulty"
-        ]
+        "required": ["title", "markdown_key", "test_keys", "difficulty"]
       },
       "UpdateProblemRequest": {
         "type": "object",
@@ -317,19 +274,12 @@
             },
             "minItems": 1,
             "description": "Array of S3 keys for test cases",
-            "example": [
-              "tests/two-sum-1.json"
-            ]
+            "example": ["tests/two-sum-1.json"]
           },
           "difficulty": {
             "type": "string",
             "nullable": true,
-            "enum": [
-              "easy",
-              "medium",
-              "hard",
-              null
-            ],
+            "enum": ["easy", "medium", "hard", null],
             "description": "Problem difficulty level",
             "example": "easy"
           },
@@ -341,10 +291,7 @@
               "minLength": 1
             },
             "description": "Problem tags",
-            "example": [
-              "array",
-              "hash-table"
-            ]
+            "example": ["array", "hash-table"]
           }
         }
       },
@@ -379,17 +326,11 @@
             },
             "minItems": 1,
             "description": "Array of S3 keys for test cases",
-            "example": [
-              "tests/two-sum-1.json"
-            ]
+            "example": ["tests/two-sum-1.json"]
           },
           "difficulty": {
             "type": "string",
-            "enum": [
-              "easy",
-              "medium",
-              "hard"
-            ],
+            "enum": ["easy", "medium", "hard"],
             "description": "Problem difficulty level",
             "example": "easy"
           },
@@ -458,9 +399,7 @@
                 "example": "johndoe"
               }
             },
-            "required": [
-              "creator_username"
-            ]
+            "required": ["creator_username"]
           }
         ]
       },
@@ -486,12 +425,7 @@
             "example": 1
           }
         },
-        "required": [
-          "problems",
-          "totalProblems",
-          "totalPages",
-          "currentPage"
-        ]
+        "required": ["problems", "totalProblems", "totalPages", "currentPage"]
       },
       "CreateSubmissionRequest": {
         "type": "object",
@@ -503,9 +437,7 @@
           },
           "language": {
             "type": "string",
-            "enum": [
-              "cpp"
-            ],
+            "enum": ["cpp"],
             "description": "Programming language",
             "example": "cpp"
           },
@@ -516,11 +448,7 @@
             "example": "submissions/code-123.cpp"
           }
         },
-        "required": [
-          "problem_id",
-          "language",
-          "submission_key"
-        ]
+        "required": ["problem_id", "language", "submission_key"]
       },
       "Submission": {
         "type": "object",
@@ -547,9 +475,7 @@
           },
           "language": {
             "type": "string",
-            "enum": [
-              "cpp"
-            ],
+            "enum": ["cpp"],
             "description": "Programming language",
             "example": "cpp"
           },
@@ -671,9 +597,7 @@
     "/api/v1/users/register": {
       "post": {
         "summary": "Register a new user",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -703,10 +627,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message"
-                  ],
+                  "required": ["success", "message"],
                   "description": "Registration successful response"
                 }
               }
@@ -738,9 +659,7 @@
     "/api/v1/users/login": {
       "post": {
         "summary": "Log in a user and return an access token",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -779,10 +698,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message"
-                  ],
+                  "required": ["success", "message"],
                   "description": "Login successful response"
                 }
               }
@@ -824,9 +740,7 @@
     "/api/v1/users/profile": {
       "get": {
         "summary": "Get the profile of the logged-in user",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "bearerAuth": []
@@ -855,11 +769,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -888,9 +798,7 @@
       },
       "patch": {
         "summary": "Update the logged-in user's profile",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "bearerAuth": []
@@ -925,10 +833,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message"
-                  ],
+                  "required": ["success", "message"],
                   "description": "Profile update response"
                 }
               }
@@ -970,9 +875,7 @@
     "/api/v1/users/profile/{userId}": {
       "get": {
         "summary": "Get a user's profile by ID",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "parameters": [
           {
             "schema": {
@@ -1009,11 +912,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1044,9 +943,7 @@
     "/api/v1/users/role/{userId}": {
       "get": {
         "summary": "Get a user's role by ID",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "parameters": [
           {
             "schema": {
@@ -1083,11 +980,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1116,9 +1009,7 @@
       },
       "put": {
         "summary": "Change a user's role (requires sufficient privileges)",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "bearerAuth": []
@@ -1166,10 +1057,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message"
-                  ],
+                  "required": ["success", "message"],
                   "description": "Role change response"
                 }
               }
@@ -1221,9 +1109,7 @@
     "/api/v1/problems": {
       "post": {
         "summary": "Create a new problem",
-        "tags": [
-          "Problems"
-        ],
+        "tags": ["Problems"],
         "security": [
           {
             "bearerAuth": []
@@ -1261,11 +1147,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1304,9 +1186,7 @@
       },
       "get": {
         "summary": "Get problems with optional filtering and pagination",
-        "tags": [
-          "Problems"
-        ],
+        "tags": ["Problems"],
         "parameters": [
           {
             "schema": {
@@ -1341,12 +1221,7 @@
             "schema": {
               "type": "string",
               "nullable": true,
-              "enum": [
-                "easy",
-                "medium",
-                "hard",
-                null
-              ],
+              "enum": ["easy", "medium", "hard", null],
               "description": "Filter by difficulty",
               "example": "easy"
             },
@@ -1364,10 +1239,7 @@
                 "minLength": 1
               },
               "description": "Comma-separated list of tags to filter by",
-              "example": [
-                "array",
-                "hash-table"
-              ]
+              "example": ["array", "hash-table"]
             },
             "required": false,
             "description": "Comma-separated list of tags to filter by",
@@ -1424,11 +1296,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1449,9 +1317,7 @@
     "/api/v1/problems/{problemId}": {
       "get": {
         "summary": "Get a problem by ID",
-        "tags": [
-          "Problems"
-        ],
+        "tags": ["Problems"],
         "parameters": [
           {
             "schema": {
@@ -1487,11 +1353,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1510,9 +1372,7 @@
       },
       "patch": {
         "summary": "Update a problem",
-        "tags": [
-          "Problems"
-        ],
+        "tags": ["Problems"],
         "security": [
           {
             "bearerAuth": []
@@ -1562,11 +1422,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1615,9 +1471,7 @@
       },
       "delete": {
         "summary": "Delete a problem",
-        "tags": [
-          "Problems"
-        ],
+        "tags": ["Problems"],
         "security": [
           {
             "bearerAuth": []
@@ -1655,10 +1509,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message"
-                  ],
+                  "required": ["success", "message"],
                   "description": "Problem delete response"
                 }
               }
@@ -1700,9 +1551,7 @@
     "/api/v1/submissions": {
       "post": {
         "summary": "Create a new code submission",
-        "tags": [
-          "Submissions"
-        ],
+        "tags": ["Submissions"],
         "security": [
           {
             "bearerAuth": []
@@ -1740,11 +1589,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1783,9 +1628,7 @@
       },
       "get": {
         "summary": "Get submissions by problemId or userId",
-        "tags": [
-          "Submissions"
-        ],
+        "tags": ["Submissions"],
         "security": [
           {
             "bearerAuth": []
@@ -1868,10 +1711,7 @@
             "schema": {
               "type": "string",
               "nullable": true,
-              "enum": [
-                "cpp",
-                null
-              ],
+              "enum": ["cpp", null],
               "description": "Programming language",
               "example": "cpp"
             },
@@ -1904,11 +1744,7 @@
                       "nullable": true
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1939,9 +1775,7 @@
     "/api/v1/jwks": {
       "get": {
         "summary": "Get JSON Web Key Set (JWKS)",
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "responses": {
           "200": {
             "description": "JWKS public keys",
@@ -1960,9 +1794,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "keys"
-                  ]
+                  "required": ["keys"]
                 }
               }
             }

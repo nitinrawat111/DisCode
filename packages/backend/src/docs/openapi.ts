@@ -176,13 +176,15 @@ Registry.registerPath({
   },
   responses: {
     200: {
-      description: "Login successful, returns access token in Authorization header",
+      description:
+        "Login successful, returns access token in Authorization header",
       headers: {
         Authorization: {
           schema: {
             type: "string",
             example: "Bearer eyJhbG...",
-            description: "JWT access token (must be sent as Authorization header on subsequent requests)",
+            description:
+              "JWT access token (must be sent as Authorization header on subsequent requests)",
           },
         },
       },

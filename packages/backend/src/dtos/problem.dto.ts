@@ -5,21 +5,14 @@ import { UserIdDto } from "./user.dto";
 ////////////////////////////////////////////
 // Common Dtos
 ////////////////////////////////////////////
-const S3KeyDto = z
-  .string()
-  .min(1)
-  .openapi({
-    description: "S3 key for file storage",
-    example: "markdown/problem-123.md",
-  });
-export const ProblemTitleDto = z
-  .string()
-  .min(1)
-  .max(200)
-  .openapi({
-    description: "Problem title (max 200 characters)",
-    example: "Two Sum",
-  });
+const S3KeyDto = z.string().min(1).openapi({
+  description: "S3 key for file storage",
+  example: "markdown/problem-123.md",
+});
+export const ProblemTitleDto = z.string().min(1).max(200).openapi({
+  description: "Problem title (max 200 characters)",
+  example: "Two Sum",
+});
 export const MarkdownKeyDto = S3KeyDto.openapi({
   description: "S3 key for problem statement markdown",
   example: "markdown/two-sum.md",
@@ -35,12 +28,10 @@ export const ProblemDifficultyDto = z.enum(ProblemDifficulty).openapi({
   description: "Problem difficulty level",
   example: ProblemDifficulty.Easy,
 });
-export const ProblemTagsDto = z
-  .array(z.string().min(1))
-  .openapi({
-    description: "Problem tags",
-    example: ["array", "hash-table"],
-  }); // Tags cannot be empty strings
+export const ProblemTagsDto = z.array(z.string().min(1)).openapi({
+  description: "Problem tags",
+  example: ["array", "hash-table"],
+}); // Tags cannot be empty strings
 
 ////////////////////////////////////////////
 // Create Problem Request Dto
