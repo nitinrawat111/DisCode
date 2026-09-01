@@ -26,7 +26,9 @@ app.use(express.json());
 app.use(morganMiddleware);
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN?.split(",").map((origin) => {
+      return origin.trim();
+    }),
     credentials: true, // To allow cookies
   }),
 );

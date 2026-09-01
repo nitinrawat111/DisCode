@@ -596,6 +596,7 @@
   "paths": {
     "/api/v1/users/register": {
       "post": {
+        "operationId": "registerUser",
         "summary": "Register a new user",
         "tags": ["Users"],
         "requestBody": {
@@ -658,6 +659,7 @@
     },
     "/api/v1/users/login": {
       "post": {
+        "operationId": "loginUser",
         "summary": "Log in a user and return an access token",
         "tags": ["Users"],
         "requestBody": {
@@ -739,6 +741,7 @@
     },
     "/api/v1/users/profile": {
       "get": {
+        "operationId": "getLoggedUserProfile",
         "summary": "Get the profile of the logged-in user",
         "tags": ["Users"],
         "security": [
@@ -797,6 +800,7 @@
         }
       },
       "patch": {
+        "operationId": "updateProfile",
         "summary": "Update the logged-in user's profile",
         "tags": ["Users"],
         "security": [
@@ -874,6 +878,7 @@
     },
     "/api/v1/users/profile/{userId}": {
       "get": {
+        "operationId": "getUserProfile",
         "summary": "Get a user's profile by ID",
         "tags": ["Users"],
         "parameters": [
@@ -942,6 +947,7 @@
     },
     "/api/v1/users/role/{userId}": {
       "get": {
+        "operationId": "getUserRole",
         "summary": "Get a user's role by ID",
         "tags": ["Users"],
         "parameters": [
@@ -1008,6 +1014,7 @@
         }
       },
       "put": {
+        "operationId": "changeUserRole",
         "summary": "Change a user's role (requires sufficient privileges)",
         "tags": ["Users"],
         "security": [
@@ -1108,6 +1115,7 @@
     },
     "/api/v1/problems": {
       "post": {
+        "operationId": "createProblem",
         "summary": "Create a new problem",
         "tags": ["Problems"],
         "security": [
@@ -1185,6 +1193,7 @@
         }
       },
       "get": {
+        "operationId": "getProblems",
         "summary": "Get problems with optional filtering and pagination",
         "tags": ["Problems"],
         "parameters": [
@@ -1316,6 +1325,7 @@
     },
     "/api/v1/problems/{problemId}": {
       "get": {
+        "operationId": "getProblem",
         "summary": "Get a problem by ID",
         "tags": ["Problems"],
         "parameters": [
@@ -1371,6 +1381,7 @@
         }
       },
       "patch": {
+        "operationId": "updateProblem",
         "summary": "Update a problem",
         "tags": ["Problems"],
         "security": [
@@ -1470,6 +1481,7 @@
         }
       },
       "delete": {
+        "operationId": "deleteProblem",
         "summary": "Delete a problem",
         "tags": ["Problems"],
         "security": [
@@ -1550,6 +1562,7 @@
     },
     "/api/v1/submissions": {
       "post": {
+        "operationId": "createSubmission",
         "summary": "Create a new code submission",
         "tags": ["Submissions"],
         "security": [
@@ -1627,6 +1640,7 @@
         }
       },
       "get": {
+        "operationId": "getSubmissions",
         "summary": "Get submissions by problemId or userId",
         "tags": ["Submissions"],
         "security": [
@@ -1774,6 +1788,7 @@
     },
     "/api/v1/jwks": {
       "get": {
+        "operationId": "getJwks",
         "summary": "Get JSON Web Key Set (JWKS)",
         "tags": ["Auth"],
         "responses": {

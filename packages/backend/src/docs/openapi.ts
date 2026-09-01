@@ -115,9 +115,15 @@ export const UserRoleResponseSchema = Registry.register(
 );
 
 // Register User Endpoints
+// NOTE: Every route must have a stable, unique `operationId`.
+// Orval consumes these to name the generated frontend API client
+// functions/hooks and to derive React Query query keys.
+// Do not rename casually once the frontend client is generated.
+// Reference: https://orval.dev/docs/reference/configuration/output#useoperationidasquerykey
 Registry.registerPath({
   method: "post",
   path: "/api/v1/users/register",
+  operationId: "registerUser",
   summary: "Register a new user",
   tags: ["Users"],
   request: {
@@ -163,6 +169,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "post",
   path: "/api/v1/users/login",
+  operationId: "loginUser",
   summary: "Log in a user and return an access token",
   tags: ["Users"],
   request: {
@@ -227,6 +234,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "get",
   path: "/api/v1/users/profile",
+  operationId: "getLoggedUserProfile",
   summary: "Get the profile of the logged-in user",
   tags: ["Users"],
   security: [{ [BearerAuthComponent.name]: [] }],
@@ -261,6 +269,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "get",
   path: "/api/v1/users/profile/{userId}",
+  operationId: "getUserProfile",
   summary: "Get a user's profile by ID",
   tags: ["Users"],
   request: {
@@ -310,6 +319,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "patch",
   path: "/api/v1/users/profile",
+  operationId: "updateProfile",
   summary: "Update the logged-in user's profile",
   tags: ["Users"],
   security: [{ [BearerAuthComponent.name]: [] }],
@@ -361,6 +371,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "get",
   path: "/api/v1/users/role/{userId}",
+  operationId: "getUserRole",
   summary: "Get a user's role by ID",
   tags: ["Users"],
   request: {
@@ -410,6 +421,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "put",
   path: "/api/v1/users/role/{userId}",
+  operationId: "changeUserRole",
   summary: "Change a user's role (requires sufficient privileges)",
   tags: ["Users"],
   security: [{ [BearerAuthComponent.name]: [] }],
@@ -529,6 +541,7 @@ export const GetProblemsResponseSchema = Registry.register(
 Registry.registerPath({
   method: "post",
   path: "/api/v1/problems",
+  operationId: "createProblem",
   summary: "Create a new problem",
   tags: ["Problems"],
   security: [{ [BearerAuthComponent.name]: [] }],
@@ -580,6 +593,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "get",
   path: "/api/v1/problems",
+  operationId: "getProblems",
   summary: "Get problems with optional filtering and pagination",
   tags: ["Problems"],
   request: {
@@ -608,6 +622,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "get",
   path: "/api/v1/problems/{problemId}",
+  operationId: "getProblem",
   summary: "Get a problem by ID",
   tags: ["Problems"],
   request: {
@@ -648,6 +663,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "patch",
   path: "/api/v1/problems/{problemId}",
+  operationId: "updateProblem",
   summary: "Update a problem",
   tags: ["Problems"],
   security: [{ [BearerAuthComponent.name]: [] }],
@@ -720,6 +736,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "delete",
   path: "/api/v1/problems/{problemId}",
+  operationId: "deleteProblem",
   summary: "Delete a problem",
   tags: ["Problems"],
   security: [{ [BearerAuthComponent.name]: [] }],
@@ -812,6 +829,7 @@ export const GetSubmissionsResponseSchema = Registry.register(
 Registry.registerPath({
   method: "post",
   path: "/api/v1/submissions",
+  operationId: "createSubmission",
   summary: "Create a new code submission",
   tags: ["Submissions"],
   security: [{ [BearerAuthComponent.name]: [] }],
@@ -863,6 +881,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "get",
   path: "/api/v1/submissions",
+  operationId: "getSubmissions",
   summary: "Get submissions by problemId or userId",
   tags: ["Submissions"],
   security: [{ [BearerAuthComponent.name]: [] }],
@@ -903,6 +922,7 @@ Registry.registerPath({
 Registry.registerPath({
   method: "get",
   path: "/api/v1/jwks",
+  operationId: "getJwks",
   summary: "Get JSON Web Key Set (JWKS)",
   tags: ["Auth"],
   responses: {
