@@ -8,3 +8,6 @@ coverage/
 .env.dev
 .env.production
 .env.test
+
+*storybook.log
+storybook-static

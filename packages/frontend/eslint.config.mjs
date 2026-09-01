@@ -1,3 +1,4 @@
+import { configs } from "eslint-plugin-storybook";
 import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -48,4 +49,5 @@ export default defineConfig([
     },
   },
   globalIgnores(["node_modules", "dist", "logs"]),
+  ...configs["flat/recommended"],
 ]);
